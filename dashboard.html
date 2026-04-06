@@ -1352,9 +1352,7 @@ initApp();
 
     restoreScroll();
 
-    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      navigator.serviceWorker.register('/qu-suite-sw.js').catch(() => {});
-    }
+
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');
     window.addEventListener('pagehide', saveScroll);
