@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qu-suite-v1';
+const CACHE_NAME = 'qu-suite-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const ASSETS = [
   './crm.html',
   './dashboard.html',
   './admin.html',
-  './404.html'
+  './404.html',
+  './qu-suite-manifest.json'
 ];
 
 self.addEventListener('install', event => {
@@ -21,6 +22,26 @@ self.addEventListener('activate', event => {
   );
 });
 
+const ROUTES = {
+  dashboard: 'dashboard.html',
+  crm: 'crm.html',
+  admin: 'admin.html',
+  app: 'app.html',
+  index: 'index.html',
+  hub: 'index.html'
+};
+
+function getRouteRequest(request) {
+  const url = new URL(request.url);
+  const slug = url.pathname.replace(/\/+$/, '').split('/').pop();
+  if (!slug || /\.[a-z0-9]+$/i.test(slug)) return request;
+  const target = ROUTES[slug];
+  if (!target) return request;
+  const next = new URL(target, request.url);
+  next.search = url.search;
+  return new Request(next.href, request);
+}
+
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
@@ -28,24 +49,34 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
 
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
-        return response;
-      }).catch(async () => {
-        const cached = await caches.match(request);
-        return cached || caches.match('./index.html') || caches.match('./404.html');
-      })
-    );
+    event.respondWith((async () => {
+      const routedRequest = getRouteRequest(request);
+      try {
+        const response = await fetch(routedRequest);
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(routedRequest, copy)).catch(() => {});
+          return response;
+        }
+        const cachedRouted = await caches.match(routedRequest);
+        const cachedOriginal = await caches.match(request);
+        return cachedRouted || cachedOriginal || caches.match('./index.html') || caches.match('./404.html') || response;
+      } catch (err) {
+        const cachedRouted = await caches.match(routedRequest);
+        const cachedOriginal = await caches.match(request);
+        return cachedRouted || cachedOriginal || caches.match('./index.html') || caches.match('./404.html');
+      }
+    })());
     return;
   }
 
   if (url.origin === location.origin) {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
+        }
         return response;
       }).catch(() => cached))
     );
