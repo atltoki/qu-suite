@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QU Suite</title>
+  <script>
+    (function () {
+      const map = {
+        dashboard: 'dashboard.html',
+        crm: 'crm.html',
+        admin: 'admin.html',
+        app: 'app.html',
+        index: 'index.html',
+        hub: 'index.html'
+      };
+      const slug = location.pathname.replace(/\/+$/, '').split('/').pop();
+      const target = map[slug] || 'index.html';
+      const base = location.href.replace(/[^/]*$/, '');
+      const next = new URL(target, base);
+      next.search = location.search;
+      next.hash = location.hash;
+      location.replace(next.href);
+    })();
+  </script>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0a0a;color:#f0ede6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .box{max-width:420px;text-align:center;padding:24px}
+    h1{font-size:22px;margin:0 0 10px}
+    p{color:#9a9590;margin:0;line-height:1.5}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Redirection QU Suite</h1>
+    <p>On t’emmène vers la bonne page.</p>
+  </div>
+</body>
+</html>

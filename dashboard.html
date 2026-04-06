@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Quad Unlimited — Dashboard</title>
@@ -1121,6 +1124,7 @@ initApp();
   }
 
   function go(url, el){
+    url = window.quNormalizeUrl(url);
     if(!url) return;
     if(el && !reduceMotion){
       el.style.transform = 'scale(.97)';
@@ -1132,7 +1136,7 @@ initApp();
 
   window.quNotify = function(message, tone='good') { flash(message, tone); };
   window.quGoPage = function(url, el) { go(url, el); };
-  window.quGoHub = function() { go('https://hub.allan-tchicaya.workers.dev/'); };
+  window.quGoHub = function() { go('index.html'); };
   window.addEventListener('qu:notify', (e) => {
     const detail = e.detail || {};
     flash(detail.message || String(detail || 'Notification'), detail.tone || 'good');
@@ -1241,6 +1245,7 @@ initApp();
     toast(hits ? 'Synchronisation lancée' : 'Aucune action de sync détectée');
   }
   function launchApp(url){
+    url = window.quNormalizeUrl(url);
     state.lastApp = url;
     saveState(state);
     location.href = url;
@@ -1352,7 +1357,9 @@ initApp();
 
     restoreScroll();
 
-
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      navigator.serviceWorker.register('./qu-suite-sw.js').catch(() => {});
+    }
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');
     window.addEventListener('pagehide', saveScroll);

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 
 <html lang="fr">
+<script>
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+</script>
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
@@ -1932,6 +1935,7 @@ function printFacture(id) {
     toast(hits ? 'Synchronisation lancée' : 'Aucune action de sync détectée');
   }
   function launchApp(url){
+    url = window.quNormalizeUrl(url);
     state.lastApp = url;
     saveState(state);
     location.href = url;
@@ -2044,7 +2048,7 @@ function printFacture(id) {
     restoreScroll();
 
     if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      navigator.serviceWorker.register('/qu-suite-sw.js').catch(() => {});
+      navigator.serviceWorker.register('./qu-suite-sw.js').catch(() => {});
     }
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');
@@ -2094,7 +2098,7 @@ window.addEventListener('appinstalled',function(){document.getElementById('insta
 </script>
 <script id="qu-crm-patch">
 (function(){
-  function quGoHub(){ window.location.href = 'https://hub.allan-tchicaya.workers.dev/'; }
+  function quGoHub(){ window.location.href = 'index.html'; }
   function quNotify(msg){
     var t = document.getElementById('quToast');
     if(!t){ t = document.createElement('div'); t.id='quToast'; t.className='qu-toast'; document.body.appendChild(t); }
@@ -2212,6 +2216,7 @@ window.addEventListener('appinstalled',function(){document.getElementById('insta
     toast(hits ? 'Synchronisation lancée' : 'Aucune action de sync détectée');
   }
   function launchApp(url){
+    url = window.quNormalizeUrl(url);
     state.lastApp = url;
     saveState(state);
     location.href = url;
@@ -2323,7 +2328,9 @@ window.addEventListener('appinstalled',function(){document.getElementById('insta
 
     restoreScroll();
 
-
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      navigator.serviceWorker.register('./qu-suite-sw.js').catch(() => {});
+    }
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');
     window.addEventListener('pagehide', saveScroll);
