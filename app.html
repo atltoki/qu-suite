@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="QU Suite">
+<meta name="theme-color" content="#0A0A0A">
+<title>QU Suite — Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+:root{--o:#FF5C00;--bg:#0A0A0A;--bg2:#111;--bg3:#171717;--border:rgba(255,92,0,.14);--border2:rgba(255,255,255,.06);--text:#F0EDE6;--muted:#8A8680;--green:#22C55E;--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;--purple:#A855F7;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body{-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:#2B2B2B;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+.shell{min-height:100dvh;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:40;background:rgba(10,10,10,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand b{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.08em}
+.brand b span{color:var(--o)}
+.brand small{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pill{border:1px solid var(--border2);background:var(--bg2);color:var(--text);border-radius:999px;padding:9px 12px;font-size:12px;cursor:pointer}
+.pill.primary{background:var(--o);border-color:var(--o);font-weight:700}
+.pill:active{transform:scale(.98)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block}
+.status-dot.off{background:var(--red)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;border-bottom:1px solid var(--border2);background:var(--bg)}
+.tab{white-space:nowrap;flex:0 0 auto;border:1px solid var(--border2);background:var(--bg2);color:var(--muted);border-radius:999px;padding:9px 13px;font-size:12px;cursor:pointer}
+.tab.active{background:rgba(255,92,0,.14);border-color:rgba(255,92,0,.32);color:#FF8A4D}
+.main{flex:1;padding:14px;max-width:1200px;width:100%;margin:0 auto}
+.section{display:none;animation:fade .16s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hero{background:linear-gradient(180deg,rgba(255,92,0,.10),transparent 72%);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;letter-spacing:.06em;margin-bottom:8px}
+.hero p{color:var(--muted);line-height:1.5;font-size:14px;max-width:860px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.metric{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:var(--mc,var(--o));opacity:.8}
+.metric .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.metric .val{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;letter-spacing:.04em}
+.metric .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
+.form-grid .full{grid-column:1/-1}
+label{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:12px;padding:11px 12px;outline:none}
+textarea{resize:vertical;min-height:84px}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,92,0,.55)}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:none;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:700;font-size:13px}
+.btn.primary{background:var(--o);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--border2);color:#bcb7b2}
+.btn.danger{background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.28);color:#ff8c8c}
+.btn:active{transform:scale(.98)}
+.list{display:grid;gap:8px}
+.item{background:#101010;border:1px solid #1e1e1e;border-radius:14px;padding:12px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.item:hover{border-color:rgba(255,92,0,.25)}
+.item-main{min-width:0;flex:1}
+.item-title{font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;word-break:break-word}
+.item-meta{font-size:12px;color:#9d9993;line-height:1.45;word-break:break-word}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-size:10px;border-radius:999px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px;line-height:1}
+.b-or{background:rgba(255,92,0,.14);border:1px solid rgba(255,92,0,.24);color:#FF8A4D}
+.b-gr{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.22);color:#6EE7A0}
+.b-bl{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.22);color:#9BC1FF}
+.b-pr{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.22);color:#D3A8FF}
+.b-yl{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.22);color:#F8CF73}
+.empty{padding:18px;color:#7d7873;text-align:center;border:1px dashed #2b2b2b;border-radius:14px;background:#0f0f0f}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.search{min-width:220px;flex:1}
+.footer-note{font-size:12px;color:#6b6862;line-height:1.5;margin-top:10px}
+.login{position:fixed;inset:0;z-index:100;background:#0A0A0A;display:grid;place-items:center;padding:20px}
+.login-box{width:100%;max-width:420px;background:#111;border:1px solid #222;border-radius:18px;padding:22px}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.08em;line-height:1;margin-bottom:10px;text-align:center}
+.login-title span{color:var(--o)}
+.login-sub{color:var(--muted);text-align:center;font-size:13px;line-height:1.5;margin-bottom:18px}
+.login-grid{display:grid;gap:12px}
+.help{font-size:12px;color:#7b7772;line-height:1.5;margin-top:12px;text-align:center}
+.notice{font-size:12px;color:#f59e0b;line-height:1.5;margin-top:8px}
+@media (max-width:880px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+@media (max-width:520px){.main{padding:12px}.metrics{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.top-actions{justify-content:flex-start}}
+</style>
+<script>
+(function() {
+  try {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-box">
+    <div class="login-title">QU <span>Suite</span></div>
+    <div class="login-sub">Connexion Supabase, session persistante sur iOS, et aucun détour service worker.</div>
+    <div class="login-grid">
+      <div>
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="toi@domaine.com" autocomplete="email">
+      </div>
+      <div>
+        <label>Mot de passe</label>
+        <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()">
+      </div>
+      <button class="btn primary" onclick="signIn()">Se connecter</button>
+      <button class="btn ghost" onclick="restoreOffline()">Ouvrir en mode local</button>
+    </div>
+    <div class="help">Crée un utilisateur dans Supabase Auth puis connecte-toi avec cet email. La session est mémorisée sur iPhone.</div>
+    <div class="notice">Si tu utilises déjà un compte Auth, laisse l’email et le mot de passe du compte Supabase.</div>
+  </div>
+</div>
+
+<div id="shell" class="shell" style="display:none">
+  <div class="top">
+    <div>
+      <div class="brand"><b>QU <span>Suite</span></b><small>Business cockpit</small></div>
+    </div>
+    <div class="top-actions">
+      <span id="syncDot" class="status-dot off"></span>
+      <button class="pill" onclick="refreshAll()">Rafraîchir</button>
+      <button class="pill" onclick="exportAll()">Exporter</button>
+      <button class="pill primary" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div id="tabs" class="tabs"></div>
+  <div class="main">
+    <section id="sec-hub" class="section">
+      <div class="hero">
+        <h1>Business pro max.</h1>
+        <p>Centre de pilotage, CRM, stock, commandes et dashboards. Le tout dans une seule page, propre sur iOS, avec navigation douce et sans rubriques cachées sous un bouton qui joue au crabe.</p>
+      </div>
+      <div class="metrics" id="hubMetrics"></div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Raccourcis</div></div>
+          <div class="toolbar">
+            <button class="btn primary" onclick="go('crm')">CRM</button>
+            <button class="btn primary" onclick="go('orders')">Commandes</button>
+            <button class="btn primary" onclick="go('products')">Stock</button>
+            <button class="btn ghost" onclick="go('dashboard')">Stats</button>
+          </div>
+          <div class="footer-note">Le hub n’est plus un couloir à pièges. Il te laisse entrer, pas rebondir.</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">État</div></div>
+          <div id="stateBox" class="small">Chargement…</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-dashboard" class="section"></section>
+    <section id="sec-crm" class="section"></section>
+    <section id="sec-devis" class="section"></section>
+    <section id="sec-taches" class="section"></section>
+    <section id="sec-campagnes" class="section"></section>
+    <section id="sec-expeditions" class="section"></section>
+    <section id="sec-factures" class="section"></section>
+    <section id="sec-orders" class="section"></section>
+    <section id="sec-products" class="section"></section>
+    <section id="sec-settings" class="section"></section>
+  </div>
+</div>
+
+<script>
+const SB_URL = "https://hofctcynzmqufgpqcavi.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8";
+const ENTITY_CONFIG = {"clients": {"label": "Clients", "icon": "◫", "table": "clients", "fields": ["name", "email", "phone", "company", "status", "notes"], "status": ["Actif", "Prospect", "VIP", "Inactif"]}, "devis": {"label": "Devis", "icon": "✎", "table": "devis", "fields": ["title", "client", "amount", "status", "notes"], "status": ["Nouveau", "Envoyé", "Accepté", "Refusé"]}, "taches": {"label": "Tâches", "icon": "☑", "table": "taches", "fields": ["title", "assignee", "due", "status", "notes"], "status": ["À faire", "En cours", "Bloqué", "Terminé"]}, "campagnes": {"label": "Campagnes", "icon": "✦", "table": "campagnes", "fields": ["name", "channel", "budget", "status", "notes"], "status": ["Brouillon", "Active", "Pause", "Terminée"]}, "expeditions": {"label": "Expéditions", "icon": "➜", "table": "expeditions", "fields": ["reference", "carrier", "tracking", "status", "notes"], "status": ["Préparée", "En route", "Livrée", "Retournée"]}, "factures": {"label": "Factures", "icon": "₣", "table": "factures", "fields": ["number", "client", "total", "status", "notes"], "status": ["Brouillon", "Émise", "Payée", "En retard"]}, "products": {"label": "Stock", "icon": "📦", "table": "products", "fields": ["name", "sku", "price", "stock", "location", "status", "notes"], "status": ["En stock", "Faible", "Rupture", "Arrêté"]}, "orders": {"label": "Commandes", "icon": "🧾", "table": "orders", "fields": ["order_ref", "client", "total", "status", "tracking", "notes", "items_json"], "status": ["Nouveau", "En préparation", "Validé", "Expédié", "Livré", "Annulé"]}};
+
+const LS_KEY = 'qu-suite-promax-state-v1';
+const AUTH_KEY = 'qu-suite-auth-v1';
+
+let sb = null;
+let state = loadState();
+let activeTab = 'hub';
+let online = false;
+let authReady = false;
+let lastSyncAt = null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch(e) {
+    return {};
+  }
+}
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function ensureEntity(name) {
+  if (!state[name]) state[name] = [];
+  return state[name];
+}
+function uid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+function pretty(val) {
+  if (val === null || val === undefined || val === '') return '—';
+  if (typeof val === 'object') return JSON.stringify(val);
+  return String(val);
+}
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function setSync(ok) {
+  online = !!ok;
+  const dot = document.getElementById('syncDot');
+  if (dot) dot.className = 'status-dot' + (ok ? '' : ' off');
+}
+function statusColor(status) {
+  const s = String(status || '').toLowerCase();
+  if (/(actif|payée|validé|livr|termin|terminée|en cours|en route)/.test(s)) return 'b-gr';
+  if (/(nouv|brouillon|prospect|à faire|a faire|prépar|prepar|brouill)/.test(s)) return 'b-or';
+  if (/(pause|bloqu|retard|faible)/.test(s)) return 'b-yl';
+  if (/(refus|annul|rupture|inactif|arrêt)/.test(s)) return 'b-pr';
+  return 'b-bl';
+}
+function currentSection() {
+  const hash = location.hash.replace('#','').trim();
+  return hash || 'hub';
+}
+function go(name) {
+  location.hash = '#' + name;
+}
+function syncHash() {
+  const s = currentSection();
+  activeTab = ENTITY_CONFIG[s] ? s : (['hub','dashboard','settings'].includes(s) ? s : 'hub');
+  renderTabs();
+  showSection(activeTab);
+}
+window.addEventListener('hashchange', syncHash);
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
+function buildTabs() {
+  const tabs = [
+    ['hub','⌂ Hub'],
+    ['dashboard','▣ Stats'],
+    ['crm','◫ CRM'],
+    ['devis','✎ Devis'],
+    ['taches','☑ Tâches'],
+    ['campagnes','✦ Campagnes'],
+    ['expeditions','➜ Expéditions'],
+    ['factures','₣ Factures'],
+    ['orders','🧾 Commandes'],
+    ['products','📦 Stock'],
+    ['settings','⚙ Réglages'],
+  ];
+  const el = document.getElementById('tabs');
+  el.innerHTML = tabs.map(([id,label]) => `<button class="tab" data-tab="${id}" onclick="go('${id}')">${label}</button>`).join('');
+}
+function renderTabs() {
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === activeTab);
+  });
+}
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  const id = 'sec-' + name;
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  else if (name === 'hub') renderHub();
+  else if (name === 'settings') renderSettings();
+  else if (ENTITY_CONFIG[name]) renderEntity(name);
+}
+
+function itemCard(item, cfg) {
+  const title = item.name || item.title || item.number || item.reference || item.order_ref || item.sku || item.client || 'Sans titre';
+  const primary = cfg.fields.filter(f => f !== 'notes' && f !== 'status').slice(0, 3);
+  let meta = primary.map(f => `${f}: ${pretty(item[f])}`).join(' • ');
+  if (cfg.table === 'orders' && Array.isArray(item.items)) meta += (meta ? ' • ' : '') + `${item.items.length} article(s)`;
+  const badge = item.status ? `<span class="badge ${statusColor(item.status)}">${esc(item.status)}</span>` : '';
+  return `
+    <div class="item">
+      <div class="item-main">
+        <div class="item-title">${esc(title)}</div>
+        <div class="item-meta">${esc(meta || pretty(item.notes) || 'Aucune note')}</div>
+        <div class="badges">${badge}</div>
+      </div>
+      <div class="row-actions">
+        <button class="btn ghost" onclick="editEntity('${cfg.table}','${item.id}')">Éditer</button>
+        <button class="btn danger" onclick="deleteEntity('${cfg.table}','${item.id}')">Suppr.</button>
+      </div>
+    </div>`;
+}
+
+function fieldInput(name, value, cfg) {
+  if (name === 'status') {
+    return `<div><label>Status</label><select data-field="${name}">${cfg.status.map(s => `<option ${String(value||'')===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>`;
+  }
+  if (name === 'notes' || name === 'items_json') {
+    const ph = name === 'items_json' ? 'JSON des articles [{"name":"...","qty":1,"price":0}]' : 'Notes';
+    return `<div class="full"><label>${name === 'items_json' ? 'Articles' : 'Notes'}</label><textarea data-field="${name}" placeholder="${ph}">${esc(value || '')}</textarea></div>`;
+  }
+  const type = /amount|total|budget|price|stock/.test(name) ? 'number' : (name === 'due' ? 'date' : 'text');
+  const labels = {
+    name:'Nom',
+    title:'Titre',
+    email:'Email',
+    phone:'Téléphone',
+    company:'Entreprise',
+    client:'Client',
+    amount:'Montant',
+    assignee:'Assigné à',
+    due:'Date',
+    channel:'Canal',
+    budget:'Budget',
+    reference:'Référence',
+    carrier:'Transporteur',
+    tracking:'Tracking',
+    number:'Numéro',
+    total:'Total',
+    sku:'SKU',
+    price:'Prix',
+    stock:'Stock',
+    location:'Emplacement',
+    order_ref:'Commande',
+  };
+  const placeholder = labels[name] || name;
+  return `<div><label>${placeholder}</label><input data-field="${name}" type="${type}" value="${esc(value ?? '')}" placeholder="${placeholder}"></div>`;
+}
+
+function entityForm(cfg, item = {}) {
+  const title = item.id ? `Modifier ${cfg.label}` : `Ajouter ${cfg.label}`;
+  const fieldsHtml = cfg.fields.map(f => fieldInput(f, item[f] ?? '', cfg)).join('');
+  const helper = cfg.table === 'orders'
+    ? `<div class="full small">Astuce: renseigne <b>items_json</b> pour les articles, ou laisse vide pour une commande simple.</div>`
+    : '';
+  return `
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">${title}</div>
+        <div class="small">${cfg.label}</div>
+      </div>
+      <div class="form-grid">
+        ${fieldsHtml}
+        ${helper}
+      </div>
+      <div class="toolbar">
+        <button class="btn primary" onclick="saveEntity('${cfg.table}','${item.id || ''}')">Enregistrer</button>
+        <button class="btn ghost" onclick="clearForm('${cfg.table}')">Réinitialiser</button>
+      </div>
+      <div class="small">Les changements sont gardés en local et synchronisés si Supabase répond.</div>
+    </div>
+    <div id="list-${cfg.table}" class="list"></div>
+  `;
+}
+
+function getCfg(table) {
+  return Object.values(ENTITY_CONFIG).find(c => c.table === table) || null;
+}
+
+function clearForm(table) {
+  const cfg = getCfg(table);
+  if (!cfg) return;
+  const form = document.getElementById(`form-${table}`);
+  if (!form) return;
+  form.querySelectorAll('[data-field]').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  form.dataset.editId = '';
+}
+
+function mountSection(table) {
+  const cfg = getCfg(table);
+  const sec = document.getElementById(`sec-${table}`);
+  if (!cfg || !sec) return;
+  sec.innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">${cfg.icon} ${cfg.label}</div>
+        <div class="small">Table: ${cfg.table}</div>
+      </div>
+      <div class="toolbar">
+        <input id="search-${table}" class="search" placeholder="Rechercher dans ${cfg.label}..." oninput="renderEntity('${table}')">
+        <button class="btn ghost" onclick="clearForm('${cfg.table}')">Nouveau</button>
+      </div>
+      <div id="form-${cfg.table}" data-edit-id=""></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Liste</div>
+        <div class="small">${cfg.fields.join(' · ')}</div>
+      </div>
+      <div id="list-${cfg.table}" class="list"></div>
+    </div>
+  `;
+  sec.querySelector(`#form-${cfg.table}`).innerHTML = entityForm(cfg);
+  renderEntity(table);
+}
+
+async function saveEntity(table, id = '') {
+  const cfg = getCfg(table);
+  const wrap = document.getElementById(`form-${table}`);
+  if (!cfg || !wrap) return;
+  const payload = {};
+  wrap.querySelectorAll('[data-field]').forEach(el => {
+    const key = el.dataset.field;
+    let value = el.value;
+    if (/amount|total|budget|price|stock/.test(key)) value = value === '' ? 0 : Number(value);
+    if (key === 'items_json') {
+      try {
+        value = value ? JSON.parse(value) : [];
+      } catch(e) {
+        toast('items_json doit être un JSON valide');
+        throw e;
+      }
+    }
+    payload[key] = value;
+  });
+  if (!payload.status) payload.status = cfg.status[0];
+  const targetId = id || wrap.dataset.editId || uid();
+  const row = { id: targetId, ...payload, updated_at: new Date().toISOString() };
+  if (!id && !wrap.dataset.editId) row.created_at = new Date().toISOString();
+  const list = ensureEntity(table);
+  const idx = list.findIndex(x => x.id === targetId);
+  if (idx >= 0) list[idx] = row; else list.unshift(row);
+  saveState();
+  await syncEntity(table, row);
+  clearForm(table);
+  renderEntity(table);
+  if (table === 'orders') renderDashboard();
+}
+
+async function syncEntity(table, row) {
+  if (!sb) return;
+  try {
+    const r = await sb.from(table).upsert({ id: row.id, data: row }, { onConflict: 'id' });
+    if (r.error) throw r.error;
+    setSync(true);
+    lastSyncAt = new Date();
+  } catch(e) {
+    console.warn('syncEntity', table, e.message);
+    setSync(false);
+  }
+}
+
+async function deleteEntity(table, id) {
+  if (!confirm('Supprimer cet élément ?')) return;
+  const list = ensureEntity(table);
+  state[table] = list.filter(x => x.id !== id);
+  saveState();
+  if (sb) {
+    try {
+      const r = await sb.from(table).delete().eq('id', id);
+      if (r.error) throw r.error;
+    } catch(e) { console.warn(e); }
+  }
+  renderEntity(table);
+  renderDashboard();
+}
+
+function editEntity(table, id) {
+  const cfg = getCfg(table);
+  const wrap = document.getElementById(`form-${table}`);
+  const item = ensureEntity(table).find(x => x.id === id);
+  if (!cfg || !wrap || !item) return;
+  wrap.dataset.editId = id;
+  wrap.innerHTML = entityForm(cfg, item);
+}
+
+function renderEntity(table) {
+  const cfg = getCfg(table);
+  const listEl = document.getElementById(`list-${table}`);
+  const form = document.getElementById(`form-${table}`);
+  if (!cfg || !listEl || !form) return;
+  const searchTerm = (document.getElementById(`search-${table}`)?.value || '').toLowerCase().trim();
+  const items = ensureEntity(table).filter(item => {
+    if (!searchTerm) return true;
+    return JSON.stringify(item).toLowerCase().includes(searchTerm);
+  });
+  const input = form.querySelector('[data-field="items_json"]');
+  if (input && !input.value && !form.dataset.editId) input.value = '[]';
+  listEl.innerHTML = items.length ? items.map(item => itemCard(item, cfg)).join('') : `<div class="empty">Aucun élément pour le moment.</div>`;
+}
+
+function renderEntitySection(name) {
+  const cfg = ENTITY_CONFIG[name];
+  const sec = document.getElementById(`sec-${name}`);
+  if (!cfg || !sec) return;
+  sec.innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">${cfg.icon} ${cfg.label}</div>
+        <div class="small">Table: ${cfg.table}</div>
+      </div>
+      <div class="toolbar">
+        <input id="search-${name}" class="search" placeholder="Rechercher dans ${cfg.label}..." oninput="renderEntity('${name}')">
+        <button class="btn ghost" onclick="clearForm('${cfg.table}')">Nouveau</button>
+      </div>
+      <div id="form-${cfg.table}" data-edit-id=""></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Liste</div>
+        <div class="small">${cfg.fields.join(' · ')}</div>
+      </div>
+      <div id="list-${cfg.table}" class="list"></div>
+    </div>
+  `;
+  sec.querySelector(`#form-${cfg.table}`).innerHTML = entityForm(cfg);
+  renderEntity(name);
+}
+
+function renderDashboard() {
+  const totalOrders = ensureEntity('orders').reduce((s,o)=>s + (Number(o.total)||0), 0);
+  const products = ensureEntity('products');
+  const lowStock = products.filter(p => Number(p.stock||0) <= 5).length;
+  const activeClients = ensureEntity('clients').filter(c => String(c.status||'').toLowerCase() === 'actif').length;
+  const revenue = totalOrders.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+  const cards = [
+    ['Clients', activeClients, 'b-gr'],
+    ['Commandes', ensureEntity('orders').length, 'b-or'],
+    ['CA estimé', revenue + ' €', 'b-bl'],
+    ['Stock faible', lowStock, 'b-pr'],
+  ];
+  document.getElementById('sec-dashboard').innerHTML = `
+    <div class="hero">
+      <h1>Dashboard</h1>
+      <p>Lecture express des signaux utiles. Pas de paillettes inutiles, juste ce qui aide à agir.</p>
+    </div>
+    <div class="metrics">${cards.map(([lbl,val,cls]) => `<div class="metric" style="--mc:var(--${cls==='b-gr'?'green':cls==='b-bl'?'blue':cls==='b-pr'?'purple':'o'})"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="sub">${cls}</div></div>`).join('')}</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Volumes</div><div class="small">Comptage brut</div></div>
+        <div class="list">
+          ${['clients','devis','taches','campagnes','expeditions','factures','orders','products'].map(t => `<div class="item"><div class="item-main"><div class="item-title">${ENTITY_CONFIG[t].label}</div><div class="item-meta">${ensureEntity(t).length} enregistrement(s)</div></div></div>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Connexion</div><div class="small">${online ? 'Supabase' : 'Local'} • ${lastSyncAt ? lastSyncAt.toLocaleTimeString('fr-FR') : 'jamais'}</div></div>
+        <div id="stateBox" class="small"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('stateBox').innerHTML = `
+    <div>Mode: <b>${online ? 'Synchronisé' : 'Local'} </b></div>
+    <div>Session: <b>${authReady ? 'Active' : 'Restaurée localement'}</b></div>
+    <div>Appareil: <b>${navigator.userAgent.includes('iPhone') ? 'iPhone / iOS' : 'Desktop / autre'}</b></div>
+  `;
+}
+
+function renderHub() {
+  const counts = [
+    ['CRM', ensureEntity('clients').length, 'b-or'],
+    ['Devis', ensureEntity('devis').length, 'b-bl'],
+    ['Tâches', ensureEntity('taches').length, 'b-gr'],
+    ['Commandes', ensureEntity('orders').length, 'b-pr'],
+  ];
+  document.getElementById('hubMetrics').innerHTML = counts.map(([a,b,c]) => `
+    <div class="metric" style="--mc:var(--${c==='b-or'?'o':c==='b-bl'?'blue':c==='b-gr'?'green':'purple'})">
+      <div class="lbl">${a}</div><div class="val">${b}</div><div class="sub">élément(s)</div>
+    </div>`).join('');
+  document.getElementById('stateBox').textContent = online ? 'Supabase parle, les données suivent.' : 'Mode local. La synchronisation repartira dès que Supabase répond.';
+}
+
+function renderSettings() {
+  document.getElementById('sec-settings').innerHTML = `
+    <div class="hero">
+      <h1>Réglages</h1>
+      <p>Connexions, export, import et nettoyage des artefacts iOS. Les boutons gênants ont été mis au régime sec.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Supabase</div><div class="small">Auth + data</div></div>
+        <div class="form-grid">
+          <div class="full"><label>URL</label><input id="cfgUrl" value="${esc(SB_URL)}" readonly></div>
+          <div class="full"><label>Clé anon</label><textarea id="cfgKey" readonly>${esc(SB_KEY)}</textarea></div>
+        </div>
+        <div class="small">La base est déjà câblée dans l’app. Pour changer de projet, remplace ces valeurs puis republie.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Utilitaires</div></div>
+        <div class="toolbar">
+          <button class="btn primary" onclick="exportAll()">Exporter JSON</button>
+          <label class="btn ghost" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+            Importer JSON
+            <input type="file" accept="application/json" style="display:none" onchange="importAll(event)">
+          </label>
+          <button class="btn ghost" onclick="clearAppCache()">Vider cache local</button>
+          <button class="btn danger" onclick="resetLocal()">Reset local</button>
+        </div>
+        <div class="small">Sur iOS, le cache local peut garder une vieille image. Le bouton de nettoyage enlève le sable dans les rouages.</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAllSectionData() {
+  Object.keys(ENTITY_CONFIG).forEach(name => {
+    if (document.getElementById(`sec-${name}`)) {
+      renderEntitySection(name);
+    }
+  });
+  renderDashboard();
+  renderHub();
+  renderSettings();
+}
+
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(18,18,18,.98);color:#fff;border:1px solid rgba(255,92,0,.32);padding:10px 14px;border-radius:14px;z-index:9999;opacity:0;transition:all .18s ease;pointer-events:none;font-size:13px;box-shadow:0 12px 38px rgba(0,0,0,.35)';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.style.opacity='0',2400);
+}
+
+async function signIn() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (!email || !password) return toast('Remplis email et mot de passe');
+  if (!sb) {
+    toast('Supabase non initialisé');
+    return;
+  }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    toast(error.message);
+    return;
+  }
+  try { localStorage.setItem(AUTH_KEY, '1'); } catch(e) {}
+  authReady = true;
+  openShell();
+}
+
+function restoreOffline() {
+  try {
+    localStorage.setItem(AUTH_KEY, '1');
+    authReady = false;
+    openShell();
+    toast('Mode local ouvert');
+  } catch(e) {
+    openShell();
+  }
+}
+
+function logout() {
+  try { localStorage.removeItem(AUTH_KEY); } catch(e) {}
+  if (sb) sb.auth.signOut().catch(()=>{});
+  document.getElementById('shell').style.display = 'none';
+  document.getElementById('login').style.display = 'grid';
+  document.getElementById('loginPass').value = '';
+  toast('Déconnecté');
+}
+
+function openShell() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('shell').style.display = 'flex';
+  syncHash();
+  renderAllSectionData();
+  refreshAll();
+}
+
+async function initSupabase() {
+  try {
+    sb = window.supabase.createClient(SB_URL, SB_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+      }
+    });
+    sb.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        authReady = true;
+        try { localStorage.setItem(AUTH_KEY, '1'); } catch(e) {}
+      }
+    });
+    const { data } = await sb.auth.getSession();
+    authReady = !!data.session;
+    setSync(true);
+  } catch(e) {
+    console.warn(e);
+    setSync(false);
+  }
+}
+
+async function loadFromSupabase() {
+  if (!sb) return;
+  try {
+    const tables = Object.values(ENTITY_CONFIG).map(c => c.table);
+    for (const table of tables) {
+      try {
+        const { data, error } = await sb.from(table).select('id, data').order('updated_at', { ascending: false });
+        if (error) throw error;
+        if (Array.isArray(data) && data.length) {
+          state[table] = data.map(row => row.data || row).filter(Boolean);
+          saveState();
+        }
+      } catch(e) {
+        console.warn('load table', table, e.message);
+      }
+    }
+    setSync(true);
+    lastSyncAt = new Date();
+  } catch(e) {
+    setSync(false);
+  }
+}
+
+async function refreshAll() {
+  await loadFromSupabase();
+  renderAllSectionData();
+  toast(online ? 'Synchronisation terminée' : 'Mode local');
+}
+
+async function exportAll() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'qu-suite-export.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+async function importAll(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const text = await file.text();
+  try {
+    const obj = JSON.parse(text);
+    state = obj && typeof obj === 'object' ? obj : {};
+    saveState();
+    renderAllSectionData();
+    toast('Import terminé');
+  } catch(e) {
+    toast('JSON invalide');
+  }
+  ev.target.value = '';
+}
+
+async function clearAppCache() {
+  try {
+    localStorage.removeItem(LS_KEY);
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+    toast('Cache local vidé');
+  } catch(e) {
+    toast('Impossible de vider le cache');
+  }
+}
+
+async function resetLocal() {
+  if (!confirm('Tout effacer localement ?')) return;
+  state = {};
+  saveState();
+  renderAllSectionData();
+  toast('État local remis à zéro');
+}
+
+function bootstrapSections() {
+  Object.keys(ENTITY_CONFIG).forEach(name => mountSection(name));
+}
+
+async function autoLink() {
+  const hasAuth = String(localStorage.getItem(AUTH_KEY) || '') === '1';
+  if (hasAuth) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('shell').style.display = 'flex';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  buildTabs();
+  bootstrapSections();
+  await initSupabase();
+  await autoLink();
+  if (document.getElementById('shell').style.display !== 'none') {
+    openShell();
+  }
+  const sec = currentSection();
+  if (!sec || sec === 'hub') go('hub'); else go(sec);
+  syncHash();
+  renderAllSectionData();
+  if (hasLocalAuth()) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('shell').style.display = 'flex';
+  }
+});
+
+function hasLocalAuth() {
+  try { return localStorage.getItem(AUTH_KEY) === '1'; } catch(e) { return false; }
+}
+</script>
+</body>
+</html>
