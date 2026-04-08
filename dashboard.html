@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="QU Dashboard">
-<meta name="theme-color" content="#0A0A0A">
-<title>QU Dashboard</title>
-<style>
-  :root{color-scheme:dark}
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0A0A0A;color:#F0EDE6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .box{max-width:440px;padding:24px;text-align:center}
-  h1{margin:0 0 10px;font-size:22px}
-  p{margin:0 0 16px;color:#9A9590;line-height:1.5}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;text-decoration:none;background:#FF5C00;color:#fff;font-weight:700}
-  .sub{margin-top:14px;font-size:12px;color:#6B6862}
-</style>
-<script>
-(function() {
-  try {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
-    }
-  } catch(e) {}
-  const next = new URL('app.html', location.href);
-  next.hash = 'dashboard';
-  next.search = location.search;
-  setTimeout(() => location.replace(next.href), 30);
-})();
-</script>
-<noscript><meta http-equiv="refresh" content="0;url=app.html#dashboard"></noscript>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="QU Dashboard">
+  <meta name="theme-color" content="#0A0A0A">
+  <title>QU Dashboard</title>
+  <style>
+    :root{color-scheme:dark}
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0;background:#0A0A0A;color:#F0EDE6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{display:grid;place-items:center;padding:24px}
+    .box{max-width:460px;width:100%;text-align:center}
+    .chip{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;background:rgba(255,92,0,.14);border:1px solid rgba(255,92,0,.3);color:#FF8A4D;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+    h1{margin:0 0 10px;font-size:26px}
+    p{margin:0 0 18px;color:#9A9590;line-height:1.5}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;text-decoration:none;background:#FF5C00;color:#fff;font-weight:700}
+    .sub{margin-top:14px;font-size:12px;color:#6B6862;line-height:1.5}
+  </style>
+  <script>
+    (function() {
+      try {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+        }
+      } catch (e) {}
+      const next = new URL('app.html', location.href);
+      next.hash = 'dashboard';
+      next.search = location.search;
+      setTimeout(() => location.replace(next.href), 30);
+    })();
+  </script>
+  <noscript><meta http-equiv="refresh" content="0;url=app.html#dashboard"></noscript>
 </head>
 <body>
   <div class="box">
-    <h1>Dashboard</h1>
-    <p>Redirection vers la version centrale, sans service worker ni détour en spirale.</p>
-    <a class="btn" href="app.html#dashboard">Ouvrir</a>
-    <div class="sub">Si ça tarde, le lien ci-dessus va droit au but.</div>
+    <div class="chip">QU Dashboard</div>
+    <h1>QU Dashboard prêt</h1>
+    <p>Accès direct vers la superapp, avec le dashboard déjà sélectionné.</p>
+    <a class="btn" href="app.html#dashboard">Ouvrir maintenant</a>
+    <div class="sub">Cette page reste un accès direct, la superapp vit dans app.html.</div>
   </div>
 </body>
 </html>
