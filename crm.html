@@ -2,7 +2,7 @@
 
 <html lang="fr">
 <script>
-window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
 </script>
 <head>
 <meta charset="utf-8"/>
@@ -210,24 +210,24 @@ textarea.inp{resize:vertical}
 }
 .qu-shell-launch{
   position:fixed;
-  right:14px;
-  bottom:calc(14px + env(safe-area-inset-bottom));
+  right:12px;
+  bottom:calc(12px + env(safe-area-inset-bottom));
   z-index:2147483645;
-  width:52px;height:52px;border-radius:18px;
+  width:44px;height:44px;border-radius:14px;
   border:1px solid rgba(255,92,0,.28);
   background:linear-gradient(180deg,rgba(255,122,46,.18),rgba(255,92,0,.08));
   color:var(--qu-shell-text);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  box-shadow:0 8px 22px rgba(0,0,0,.32);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
-  font-size:20px;
+  font-size:18px;
   cursor:pointer;
 }
 .qu-shell-launch:active{transform:scale(.96)}
 .qu-shell-badge{
-  position:absolute;top:-6px;right:-6px;
-  min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+  position:absolute;top:-5px;right:-5px;
+  min-width:16px;height:16px;padding:0 5px;border-radius:999px;
   background:var(--qu-shell-orange);color:#000;
   display:flex;align-items:center;justify-content:center;
   font-size:10px;font-weight:800;
@@ -240,13 +240,13 @@ textarea.inp{resize:vertical}
 }
 .qu-shell-backdrop.open{opacity:1;pointer-events:auto}
 .qu-shell-panel{
-  position:fixed;right:14px;bottom:78px;z-index:2147483644;
-  width:min(360px,calc(100vw - 28px));
+  position:fixed;right:12px;bottom:66px;z-index:2147483644;
+  width:min(360px,calc(100vw - 24px));
   background:var(--qu-shell-panel);
   color:var(--qu-shell-text);
   border:1px solid var(--qu-shell-line);
-  border-radius:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  border-radius:20px;
+  box-shadow:0 22px 60px rgba(0,0,0,.45);
   overflow:hidden;
   transform:translateY(12px) scale(.98);
   opacity:0;
@@ -317,29 +317,9 @@ textarea.inp{resize:vertical}
 }
 </style>
 
-  <script defer src="./qu-bridge.js"></script>
 </head>
 <body>
-<div id="qu-page-shortcut" style="position:fixed;top:12px;left:12px;z-index:2147483645"><a href="./cockpit.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(18,18,18,.9);border:1px solid rgba(255,92,0,.28);color:#F0EDE6;text-decoration:none;font:700 12px/1 'DM Sans',sans-serif;box-shadow:0 10px 26px rgba(0,0,0,.25)">🧠 Cockpit</a></div>
 <div class="mob-overlay" id="mobOverlay" onclick="closeMobNav()"></div>
-<div id="loginScreen">
-<div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#fff;letter-spacing:2px;text-align:center">QUAD <span style="color:#FF5A00">UNLIMITED</span><br/><span style="font-size:14px;font-weight:400;color:#555;letter-spacing:3px">CRM</span></div>
-<div id="loginBox">
-<div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;text-align:center;letter-spacing:1px">ACCES PRIVE</div>
-<div>
-<label style="display:block;font-family:'DM Sans',sans-serif;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Identifiant</label>
-<input id="loginUser" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()" placeholder="Identifiant" style="width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:6px;padding:10px 14px;color:#e0e0e0;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;box-sizing:border-box" type="text"/>
-</div>
-<div>
-<label style="display:block;font-family:'DM Sans',sans-serif;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Mot de passe</label>
-<input id="loginPass" onkeydown="if(event.key==='Enter')doLogin()" placeholder="Mot de passe" style="width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:6px;padding:10px 14px;color:#e0e0e0;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;box-sizing:border-box" type="password"/>
-</div>
-<div id="loginErr">Identifiant ou mot de passe incorrect</div>
-<button onclick="doLogin()" onmouseout="this.style.background='#FF5A00'" onmouseover="this.style.background='#e05200'" style="background:#FF5A00;border:none;color:#fff;border-radius:6px;padding:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.5px;transition:background 0.15s">SE CONNECTER</button>
-<button onclick="unlockCRM('direct')" style="background:transparent;border:1px solid #2a2a2a;color:#888;border-radius:6px;padding:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.4px;transition:all 0.15s">ACCÈS DIRECT</button>
-<div style="font-size:11px;color:#555;text-align:center;line-height:1.4">Accès mémorisé si tu quittes puis reviens sur le CRM.</div>
-</div>
-</div>
 <div class="qu-toast" id="quToast"></div>
 <div id="appLoading" style="display:none">
 <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#fff;letter-spacing:2px">QUAD <span style="color:#FF5A00">UNLIMITED</span></div>
@@ -599,7 +579,7 @@ function renderClientDetail(c) {
   return '<div class="detail-panel">'+
     '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
     '<div><div style="display:flex;gap:6px;margin-bottom:5px">'+badge(c.type,{B2B:'#FF5A00',B2C:'#3b82f6'})+' '+badge(c.statut,SC)+'</div>'+
-    '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:800;color:#fff">'+esc(c.nom)+'</div>'+
+    '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:800;color:#fff">'+esc(c.nom)+'</div>'+
     (c.contact&&c.contact!==c.nom?'<div style="font-size:12px;color:#555;margin-top:3px">'+esc(c.contact)+'</div>':'')+
     '</div><button class="close-btn" onclick="S.clientSel=null;renderContent()">x</button></div>'+
     ((c.tags||[]).length>0?'<div style="display:flex;gap:6px;flex-wrap:wrap">'+(c.tags||[]).map(tagEl).join('')+'</div>':'')+
@@ -729,9 +709,9 @@ function renderCampagnes() {
         '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:700;color:#fff">'+esc(c.nom)+'</div></div>'+badge(c.statut,KC)+'</div>'+
         (c.description?'<div style="font-size:12px;color:#555">'+esc(c.description)+'</div>':'')+
         '<div style="display:flex;gap:14px">'+
-        (c.destinataires>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Destinataires</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:700;color:#fff">'+c.destinataires+'</div></div>':'')+
-        (c.ouvertures>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Ouvertures</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:700;color:#f59e0b">'+c.ouvertures+(taux>0?' ('+taux+'%)':'')+'</div></div>':'')+
-        (c.clics>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Clics</div><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:700;color:#FF5A00">'+c.clics+'</div></div>':'')+
+        (c.destinataires>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Destinataires</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:700;color:#fff">'+c.destinataires+'</div></div>':'')+
+        (c.ouvertures>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Ouvertures</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:700;color:#f59e0b">'+c.ouvertures+(taux>0?' ('+taux+'%)':'')+'</div></div>':'')+
+        (c.clics>0?'<div><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.8px">Clics</div><div style="font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:700;color:#FF5A00">'+c.clics+'</div></div>':'')+
         '</div>'+
         (c.dateEnvoi?'<div style="font-size:11px;color:#333">'+fmtD(c.dateEnvoi)+'</div>':'')+
         '<div style="display:flex;gap:8px"><button class="btn-ghost sm" onclick="openCampForm(\''+c.id+'\')">Editer</button><button class="btn-danger" onclick="deleteCamp(\''+c.id+'\')">x</button></div></div>';
@@ -1191,7 +1171,7 @@ function renderStocksGrid() {
       html += '<div style="background:#141414;border:1px solid #1e1e1e;border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:1fr 70px 130px 140px;gap:12px;align-items:center;margin-bottom:6px">';
       html += '<div><div style="font-size:13px;color:#e0e0e0;font-weight:500">'+esc(s.product_name)+(s.color?' ('+esc(s.color)+')':'')+'</div>';
       html += '<div style="font-size:11px;color:#444;margin-top:3px">'+esc(s.supplier)+' - '+esc(s.invoice)+'</div></div>';
-      html += '<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#FF5A00">'+s.qty_incoming+'</div><div style="font-size:10px;color:#444">en route</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:18px;font-weight:700;color:#FF5A00">'+s.qty_incoming+'</div><div style="font-size:10px;color:#444">en route</div></div>';
       html += '<div style="display:flex;align-items:center;gap:4px;justify-content:center">';
       html += '<button data-id="'+s.id+'" data-dir="-1" class="stk-adj" style="width:24px;height:24px;background:#1e1e1e;border:1px solid #2a2a2a;color:#e0e0e0;cursor:pointer;border-radius:4px;font-size:14px">-</button>';
       html += '<input type="number" id="cs-'+s.id+'" value="'+(s.qty_stock||0)+'" min="0" style="width:46px;background:#1e1e1e;border:1px solid #2a2a2a;color:#e0e0e0;text-align:center;padding:4px;font-size:12px;border-radius:4px" data-id="'+s.id+'" class="stk-inp">';
@@ -1301,7 +1281,7 @@ function renderContent() { render(); }
 var LOGIN_USER = 'quad';
 var LOGIN_PASS = 'unlimited2025';
 var SESSION_KEY = 'qu_auth';
-var AUTH_OPTIONAL = true; // CRM ouvert même sans ressaisir l'identifiant
+var AUTH_OPTIONAL = true; // Accès direct, login supprimé
 
 function quToast(msg) {
   var t = document.getElementById('quToast');
@@ -1340,19 +1320,8 @@ function doLogin() {
 }
 
 function checkAuth() {
-  var ok = false;
-  try {
-    ok = sessionStorage.getItem(SESSION_KEY) === '1' || localStorage.getItem(SESSION_KEY) === '1';
-  } catch(e) {}
-  if (ok) {
-    unlockCRM('restore');
-    return true;
-  }
-  if (AUTH_OPTIONAL) {
-    unlockCRM('direct');
-    return true;
-  }
-  return false;
+  unlockCRM('direct');
+  return true;
 }
 
 // =====================================================================
@@ -1396,7 +1365,7 @@ function initApp() {
   });
 }
 
-if (!checkAuth()) { /* wait for login */ } else { document.getElementById('loginUser') && (document.getElementById('loginUser').value = LOGIN_USER); }
+checkAuth();
 
 // ═══════════════════════════════════════════════════════
 // MODULE FACTURES — Quad Unlimited
@@ -1660,24 +1629,24 @@ function printFacture(id) {
 }
 .qu-shell-launch{
   position:fixed;
-  right:14px;
-  bottom:calc(14px + env(safe-area-inset-bottom));
+  right:12px;
+  bottom:calc(12px + env(safe-area-inset-bottom));
   z-index:2147483645;
-  width:52px;height:52px;border-radius:18px;
+  width:44px;height:44px;border-radius:14px;
   border:1px solid rgba(255,92,0,.28);
   background:linear-gradient(180deg,rgba(255,122,46,.18),rgba(255,92,0,.08));
   color:var(--qu-shell-text);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  box-shadow:0 8px 22px rgba(0,0,0,.32);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
-  font-size:20px;
+  font-size:18px;
   cursor:pointer;
 }
 .qu-shell-launch:active{transform:scale(.96)}
 .qu-shell-badge{
-  position:absolute;top:-6px;right:-6px;
-  min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+  position:absolute;top:-5px;right:-5px;
+  min-width:16px;height:16px;padding:0 5px;border-radius:999px;
   background:var(--qu-shell-orange);color:#000;
   display:flex;align-items:center;justify-content:center;
   font-size:10px;font-weight:800;
@@ -1690,13 +1659,13 @@ function printFacture(id) {
 }
 .qu-shell-backdrop.open{opacity:1;pointer-events:auto}
 .qu-shell-panel{
-  position:fixed;right:14px;bottom:78px;z-index:2147483644;
-  width:min(360px,calc(100vw - 28px));
+  position:fixed;right:12px;bottom:66px;z-index:2147483644;
+  width:min(360px,calc(100vw - 24px));
   background:var(--qu-shell-panel);
   color:var(--qu-shell-text);
   border:1px solid var(--qu-shell-line);
-  border-radius:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  border-radius:20px;
+  box-shadow:0 22px 60px rgba(0,0,0,.45);
   overflow:hidden;
   transform:translateY(12px) scale(.98);
   opacity:0;
@@ -1847,7 +1816,7 @@ function printFacture(id) {
     '</div>
 <script id="qu-shell-script">
 (() => {
-  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Superapp", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
+  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
   const APP_ALIAS = {
     'index.html':'hub',
     'crm.html':'crm',
@@ -2050,23 +2019,7 @@ function printFacture(id) {
     restoreScroll();
 
     if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      (function(){
-  try {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs){
-        regs.forEach(function(reg){
-          try { reg.unregister(); } catch (e) {}
-        });
-      }).catch(function(){});
-    }
-    if ('caches' in window && caches.keys) {
-      caches.keys().then(function(keys){
-        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
-      }).catch(function(){});
-    }
-  } catch (e) {}
-})();
-
+      navigator.serviceWorker.register('./qu-suite-sw.js').catch(() => {});
     }
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');
@@ -2144,7 +2097,7 @@ window.addEventListener('appinstalled',function(){document.getElementById('insta
 </script>
 <script id="qu-shell-script">
 (() => {
-  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Superapp", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
+  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
   const APP_ALIAS = {
     'index.html':'hub',
     'crm.html':'crm',
@@ -2347,23 +2300,7 @@ window.addEventListener('appinstalled',function(){document.getElementById('insta
     restoreScroll();
 
     if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      (function(){
-  try {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs){
-        regs.forEach(function(reg){
-          try { reg.unregister(); } catch (e) {}
-        });
-      }).catch(function(){});
-    }
-    if ('caches' in window && caches.keys) {
-      caches.keys().then(function(keys){
-        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
-      }).catch(function(){});
-    }
-  } catch (e) {}
-})();
-
+      navigator.serviceWorker.register('./qu-suite-sw.js').catch(() => {});
     }
 
     document.title = document.title.replace(/^QU[^—-]*/i, 'QU Suite');

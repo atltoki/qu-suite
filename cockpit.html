@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,244 +9,164 @@
 <title>QU Cockpit</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script defer src="./qu-bridge.js"></script>
 <style>
-:root{
-  --o:#FF5C00;--bg:#0A0A0A;--bg2:#111;--border:rgba(255,92,0,.12);--border2:rgba(255,255,255,.06);
-  --text:#F0EDE6;--muted:#9A9590;--green:#22C55E;--blue:#3B82F6;--yellow:#F59E0B;--red:#EF4444;
-}
+:root{--o:#FF5C00;--bg:#0A0A0A;--bg2:#111;--bg3:#181818;--border:rgba(255,92,0,.12);--border2:rgba(255,255,255,.06);--text:#F0EDE6;--muted:#8A8680;--green:#22C55E;--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;--purple:#A855F7}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100%;overflow-x:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
 body{-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.header{position:sticky;top:0;z-index:20;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));background:rgba(10,10,10,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header{position:sticky;top:0;z-index:20;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));background:rgba(10,10,10,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
 .brand{display:flex;align-items:baseline;gap:6px}
-.brand b{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.08em}
+.brand b{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.08em}
 .brand b span{color:var(--o)}
-.brand small{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
-.live{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:999px;padding:8px 12px;font-size:12px;color:var(--muted)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(34,197,94,.7)}
-.dot.off{background:var(--red);box-shadow:0 0 10px rgba(239,68,68,.45)}
-.main{max-width:1120px;margin:0 auto;padding:16px 16px 28px}
-.hero{background:linear-gradient(180deg,rgba(255,92,0,.10),transparent 72%);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.06em;line-height:1;margin-bottom:8px}
-.hero p{color:var(--muted);line-height:1.55;font-size:14px;max-width:860px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
-.card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:16px;overflow:hidden}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em}
-.metric{display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:14px;background:#101010;border:1px solid #1e1e1e;min-height:110px;position:relative;overflow:hidden}
-.metric::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:var(--c,var(--o));opacity:.8}
-.metric .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.metric .val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1.0;letter-spacing:.04em}
-.metric .sub{font-size:12px;color:var(--muted);line-height:1.45}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.btn-row{display:flex;flex-wrap:wrap;gap:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border2);background:#111;color:var(--text);cursor:pointer;font-weight:700;font-size:13px}
-.btn.primary{background:var(--o);border-color:var(--o);color:#fff}
-.btn:active{transform:scale(.98)}
+.brand small{color:var(--muted);font-size:10px;letter-spacing:3px;text-transform:uppercase}
+.main{max-width:1100px;margin:0 auto;padding:16px 16px 28px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:14px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:12px;font-weight:700}
+.pill.primary{background:var(--o);border-color:var(--o)}
+.hero{background:linear-gradient(180deg,rgba(255,92,0,.10),transparent 72%);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:14px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.06em;line-height:1;margin-bottom:8px}
+.hero p{color:var(--muted);line-height:1.55;font-size:14px;max-width:900px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.metric{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:var(--mc,var(--o))}
+.metric .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.metric .val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1}
+.metric .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:16px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em}
+.small{font-size:12px;color:var(--muted)}
 .list{display:grid;gap:8px}
-.item{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:#101010;border:1px solid #1e1e1e;border-radius:14px;padding:12px}
+.item{background:#101010;border:1px solid #1e1e1e;border-radius:14px;padding:12px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .item-main{min-width:0;flex:1}
-.item-title{font-weight:700;line-height:1.2;margin-bottom:4px}
-.item-meta{font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word}
-.badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.b-green{background:rgba(34,197,94,.12);color:#6EE7A0}
-.b-blue{background:rgba(59,130,246,.12);color:#9BC1FF}
-.b-yellow{background:rgba(245,158,11,.12);color:#F8CF73}
-.b-red{background:rgba(239,68,68,.12);color:#FCA5A5}
-.b-orange{background:rgba(255,92,0,.12);color:#FFB07A}
-.note{font-size:12px;color:var(--muted);line-height:1.5}
-.feed{display:grid;gap:8px;max-height:420px;overflow:auto}
-.feed-row{background:#101010;border:1px solid #1e1e1e;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.feed-left{min-width:0;flex:1}
-.feed-ttl{font-size:13px;font-weight:700}
-.feed-sub{font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px}
-.feed-time{font-size:11px;color:var(--muted);flex-shrink:0}
-@media (max-width:920px){.grid{grid-template-columns:1fr} .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.kpi-grid{grid-template-columns:1fr} .hero h1{font-size:30px}}
+.item-title{font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;word-break:break-word}
+.item-meta{font-size:12px;color:#9d9993;line-height:1.45;word-break:break-word}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-size:10px;border-radius:999px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px;line-height:1}
+.b-or{background:rgba(255,92,0,.14);border:1px solid rgba(255,92,0,.24);color:#FF8A4D}
+.b-gr{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.22);color:#6EE7A0}
+.b-bl{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.22);color:#9BC1FF}
+.b-pr{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.22);color:#D3A8FF}
+.b-yl{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.22);color:#F8CF73}
+.quick-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quick{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:14px 12px;min-height:86px;display:block;position:relative}
+.quick .qicon{font-size:18px}
+.quick .qname{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.05em;margin-top:10px}
+.quick .qdesc{font-size:11px;color:var(--muted);line-height:1.4;margin-top:4px}
+.footer{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:880px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.quick-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.metrics{grid-template-columns:1fr}.quick-links{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="brand"><b>QU <span>Cockpit</span></b><small>Temps réel</small></div>
-  <div class="live"><span id="liveDot" class="dot off"></span><span id="liveTxt">Connexion…</span></div>
+  <div class="brand"><b>QU <span>Suite</span></b><small>Business cockpit</small></div>
 </div>
-
 <div class="main">
   <section class="hero">
-    <h1>Le poste de pilotage.</h1>
-    <p>Tout remonte en temps réel depuis les apps métiers. Le cockpit lit les commandes, le stock, les clients et les signaux de l’atelier pendant que le scan reste le scan, le CRM reste le CRM et l’admin reste l’admin.</p>
-  </section>
-
-  <section class="kpi-grid" id="kpis">
-    <div class="metric" style="--c:var(--o)"><div class="lbl">Commandes</div><div class="val" id="kpi-orders">0</div><div class="sub">qu_orders</div></div>
-    <div class="metric" style="--c:var(--blue)"><div class="lbl">Clients</div><div class="val" id="kpi-clients">0</div><div class="sub">clients</div></div>
-    <div class="metric" style="--c:var(--green)"><div class="lbl">Stock</div><div class="val" id="kpi-stock">0</div><div class="sub">stocks</div></div>
-    <div class="metric" style="--c:var(--yellow)"><div class="lbl">CA</div><div class="val" id="kpi-ca">0€</div><div class="sub">somme des totaux</div></div>
-  </section>
-
-  <section class="grid">
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">Accès rapide</div>
-        <div class="note" id="sync-state">Prêt</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn primary" onclick="quNavigate('app')">Scan</button>
-        <button class="btn" onclick="quNavigate('crm')">CRM</button>
-        <button class="btn" onclick="quNavigate('dashboard')">Stats</button>
-        <button class="btn" onclick="quNavigate('admin')">Admin</button>
-        <button class="btn" onclick="quNavigate('index')">Hub</button>
-      </div>
-      <div style="height:12px"></div>
-      <div class="note">Le menu flottant global est aussi disponible sur chaque page. Le cockpit synchronise les chiffres sans te demander un refresh de plus.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">Activité live</div>
-        <div class="note" id="last-update">Jamais</div>
-      </div>
-      <div class="feed" id="feed"></div>
+    <h1>Centre de contrôle en temps réel</h1>
+    <p>Une vue d’ensemble propre pour piloter le CRM, les commandes, le scan terrain et le stock. Les modules restent séparés, mais la data danse dans le même orchestre.</p>
+    <div class="toolbar">
+      <a class="pill primary" href="index.html">Hub</a>
+      <a class="pill" href="crm.html">CRM</a>
+      <a class="pill" href="dashboard.html">Dashboard</a>
+      <a class="pill" href="admin.html">Admin</a>
+      <a class="pill" href="app.html">Scan / Picking</a>
     </div>
   </section>
-
-  <section class="grid" style="margin-top:12px">
+  <div class="metrics">
+    <div class="metric" style="--mc:var(--o)"><div class="lbl">Commandes</div><div class="val" id="kOrders">0</div><div class="sub" id="sOrders">—</div></div>
+    <div class="metric" style="--mc:var(--green)"><div class="lbl">Clients</div><div class="val" id="kClients">0</div><div class="sub">base CRM</div></div>
+    <div class="metric" style="--mc:var(--blue)"><div class="lbl">Stock</div><div class="val" id="kStock">0</div><div class="sub" id="sStock">—</div></div>
+    <div class="metric" style="--mc:var(--purple)"><div class="lbl">CA</div><div class="val" id="kRevenue">0€</div><div class="sub">cumul commandes</div></div>
+  </div>
+  <div class="grid">
     <div class="card">
-      <div class="card-head"><div class="card-title">Actions métier</div></div>
-      <div class="btn-row">
-        <button class="btn" onclick="quNavigate('app','picking')">Démarrer picking</button>
-        <button class="btn" onclick="quNavigate('app','orders')">Nouvelle commande</button>
-        <button class="btn" onclick="quNavigate('crm','expeditions')">Expéditions</button>
-        <button class="btn" onclick="quNavigate('crm','factures')">Factures</button>
+      <div class="card-head"><div class="card-title">Raccourcis</div><div class="small">Accès direct</div></div>
+      <div class="quick-links">
+        <a class="quick" href="app.html"><div class="qicon">⚡</div><div class="qname">Scan</div><div class="qdesc">Picking, codes-barres, expéditions</div></a>
+        <a class="quick" href="crm.html"><div class="qicon">◫</div><div class="qname">CRM</div><div class="qdesc">Clients, pipeline et expéditions</div></a>
+        <a class="quick" href="admin.html"><div class="qicon">⚙</div><div class="qname">Admin</div><div class="qdesc">Stock, produits, commandes</div></a>
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><div class="card-title">État des flux</div></div>
-      <div class="list" id="health"></div>
+      <div class="card-head"><div class="card-title">Alertes stock</div><div class="small">≤ 5</div></div>
+      <div id="stockAlerts" class="list"><div class="small">Chargement…</div></div>
     </div>
-  </section>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Commandes récentes</div><div class="small">Live</div></div>
+      <div id="ordersList" class="list"><div class="small">Chargement…</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">État</div><div class="small" id="liveState">Connexion…</div></div>
+      <div class="small" id="realtimeHint">Mise à jour automatique activée.</div>
+    </div>
+  </div>
+  <div class="footer">Cockpit temps réel</div>
 </div>
-
 <script>
 const SB_URL = 'https://hofctcynzmqufgpqcavi.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8';
-let sb = null;
-
-function setLive(ok, txt) {
-  const dot = document.getElementById('liveDot');
-  const label = document.getElementById('liveTxt');
-  if (dot) dot.className = 'dot' + (ok ? '' : ' off');
-  if (label) label.textContent = txt || (ok ? 'Temps réel' : 'Hors ligne');
-}
-
-function fmt(n) {
-  return new Intl.NumberFormat('fr-FR').format(Number(n || 0));
-}
-
-function feedRow(title, sub, badge, cls='b-orange') {
-  return `
-    <div class="feed-row">
-      <div class="feed-left">
-        <div class="feed-ttl">${title}</div>
-        <div class="feed-sub">${sub}</div>
-      </div>
-      <div class="feed-time"><span class="badge ${cls}">${badge}</span></div>
-    </div>`;
-}
-
-function healthRow(label, value, cls='b-green') {
-  return `
-    <div class="item">
-      <div class="item-main">
-        <div class="item-title">${label}</div>
-        <div class="item-meta">${value}</div>
-      </div>
-      <span class="badge ${cls}">${cls.replace('b-','')}</span>
-    </div>`;
-}
-
-async function refreshCockpit() {
-  if (!sb) return;
-  try {
+const sb = supabase.createClient(SB_URL, SB_KEY);
+function money(n){ return Number(n || 0).toLocaleString('fr-FR', {maximumFractionDigits: 0}); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function fmtDate(d){ try { return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'short' }); } catch(e) { return '—'; } }
+function orderStatusClass(s){ s = String(s||'').toLowerCase(); if (s.includes('livr')) return 'b-gr'; if (s.includes('exp')) return 'b-or'; if (s.includes('prep') || s.includes('recev') || s.includes('nouveau')) return 'b-yl'; if (s.includes('annul') || s.includes('refus')) return 'b-pr'; return 'b-bl'; }
+async function loadCockpit(){
+  document.getElementById('liveState').textContent = 'Synchronisation…';
+  try{
     const [{ data: orders }, { data: clients }, { data: stocks }] = await Promise.all([
-      sb.from('qu_orders').select('id,total,status,created_at').order('created_at', { ascending: false }),
-      sb.from('clients').select('id').order('created_at', { ascending: false }),
-      sb.from('stocks').select('id,qty_stock,updated_at').order('updated_at', { ascending: false }),
+      sb.from('qu_orders').select('id, order_ref, status, total, created_at, customer_name, client_name, customer_email').order('created_at', {ascending:false}).limit(10),
+      sb.from('clients').select('id').limit(1000),
+      sb.from('stocks').select('id, product_name, qty_stock, status, updated_at, unit_price_eur').order('updated_at', {ascending:false}).limit(1000)
     ]);
-
-    const safeOrders = orders || [];
-    const safeClients = clients || [];
-    const safeStocks = stocks || [];
-    const ca = safeOrders.reduce((sum, row) => sum + Number(row.total || 0), 0);
-
-    document.getElementById('kpi-orders').textContent = fmt(safeOrders.length);
-    document.getElementById('kpi-clients').textContent = fmt(safeClients.length);
-    document.getElementById('kpi-stock').textContent = fmt(safeStocks.length);
-    document.getElementById('kpi-ca').textContent = fmt(ca) + '€';
-
-    document.getElementById('health').innerHTML = [
-      ['qu_orders', `${safeOrders.length} lignes`, safeOrders.length ? 'b-green' : 'b-red'],
-      ['clients', `${safeClients.length} lignes`, safeClients.length ? 'b-blue' : 'b-red'],
-      ['stocks', `${safeStocks.length} lignes`, safeStocks.length ? 'b-green' : 'b-red'],
-    ].map(([a,b,c]) => healthRow(a,b,c)).join('');
-
-    const now = new Date();
-    document.getElementById('sync-state').textContent = 'Supabase OK';
-    document.getElementById('last-update').textContent = 'MAJ ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
-    setLive(true, 'Temps réel');
-
-    const latestOrder = safeOrders[0];
-    const feed = document.getElementById('feed');
-    if (feed) {
-      const rows = [];
-      if (latestOrder) rows.push(feedRow('Dernière commande', '#' + latestOrder.id, latestOrder.status || 'Nouveau', 'b-orange'));
-      rows.push(feedRow('Clients', String(safeClients.length), 'Connexion active', 'b-blue'));
-      rows.push(feedRow('Stocks', String(safeStocks.length), 'Flux branché', 'b-green'));
-      feed.innerHTML = rows.join('');
-    }
+    const safeOrders = Array.isArray(orders) ? orders : [];
+    const safeClients = Array.isArray(clients) ? clients : [];
+    const safeStocks = Array.isArray(stocks) ? stocks : [];
+    document.getElementById('kOrders').textContent = safeOrders.length;
+    document.getElementById('kClients').textContent = safeClients.length;
+    document.getElementById('kStock').textContent = safeStocks.length;
+    document.getElementById('kRevenue').textContent = money(safeOrders.reduce((s,o)=>s + Number(o.total||0), 0)) + '€';
+    document.getElementById('sOrders').textContent = safeOrders.length ? fmtDate(safeOrders[0].created_at) : 'aucune commande';
+    document.getElementById('sStock').textContent = safeStocks.filter(s => Number(s.qty_stock||0) <= 5).length + ' alertes';
+    document.getElementById('ordersList').innerHTML = safeOrders.length ? safeOrders.map(o => `
+      <div class="item">
+        <div class="item-main">
+          <div class="item-title">${esc(o.order_ref || o.id || 'Commande')}</div>
+          <div class="item-meta">${esc(o.customer_name || o.client_name || 'Client inconnu')} • ${fmtDate(o.created_at)}</div>
+          <div class="badges"><span class="badge ${orderStatusClass(o.status)}">${esc(o.status || 'Nouveau')}</span></div>
+        </div>
+        <div class="small">${money(o.total)}€</div>
+      </div>
+    `).join('') : '<div class="small">Aucune commande.</div>';
+    const alerts = safeStocks.filter(s => Number(s.qty_stock||0) <= 5).slice(0, 10);
+    document.getElementById('stockAlerts').innerHTML = alerts.length ? alerts.map(s => `
+      <div class="item">
+        <div class="item-main">
+          <div class="item-title">${esc(s.product_name || 'Produit')}</div>
+          <div class="item-meta">Stock faible • ${esc(s.status || '—')}</div>
+        </div>
+        <div class="badge ${Number(s.qty_stock||0) === 0 ? 'b-pr' : 'b-yl'}">${Number(s.qty_stock||0)}</div>
+      </div>
+    `).join('') : '<div class="small">Aucune alerte stock.</div>';
+    document.getElementById('liveState').textContent = 'En ligne';
   } catch (e) {
-    console.warn('cockpit refresh', e);
-    setLive(false, 'Hors ligne');
-    document.getElementById('sync-state').textContent = 'Mode local';
+    document.getElementById('liveState').textContent = 'Hors ligne';
+    document.getElementById('ordersList').innerHTML = '<div class="small">Impossible de charger les commandes.</div>';
+    document.getElementById('stockAlerts').innerHTML = '<div class="small">Impossible de charger le stock.</div>';
   }
 }
-
-window.quOnRealtime = function(payload) {
-  refreshCockpit();
-  if (payload && payload.table) {
-    const feed = document.getElementById('feed');
-    if (feed) {
-      const node = document.createElement('div');
-      node.innerHTML = feedRow('Live ' + payload.table, (payload.payload && payload.payload.eventType) ? payload.payload.eventType : 'change', 'LIVE', 'b-green');
-      feed.prepend(node.firstElementChild);
-      if (feed.children.length > 8) feed.removeChild(feed.lastElementChild);
-    }
-  }
-};
-
-async function boot() {
-  try {
-    sb = window.supabase.createClient(SB_URL, SB_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: window.localStorage
-      }
-    });
-    setLive(true, 'Connexion…');
-    await refreshCockpit();
-    setInterval(refreshCockpit, 15000);
-  } catch (e) {
-    console.warn(e);
-    setLive(false, 'Erreur Supabase');
-  }
+function startRealtime(){
+  sb.channel('cockpit-live')
+    .on('postgres_changes', { event:'*', schema:'public', table:'qu_orders' }, () => loadCockpit())
+    .on('postgres_changes', { event:'*', schema:'public', table:'qu_order_items' }, () => loadCockpit())
+    .on('postgres_changes', { event:'*', schema:'public', table:'clients' }, () => loadCockpit())
+    .on('postgres_changes', { event:'*', schema:'public', table:'stocks' }, () => loadCockpit())
+    .subscribe(() => loadCockpit());
 }
-
-document.addEventListener('DOMContentLoaded', boot);
-window.addEventListener('qu:realtime', refreshCockpit);
+document.addEventListener('DOMContentLoaded', async () => { await loadCockpit(); startRealtime(); });
 </script>
 </body>
 </html>
