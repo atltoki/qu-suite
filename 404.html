@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="QU Suite">
-  <meta name="theme-color" content="#0A0A0A">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QU Suite</title>
-  <style>
-    :root{color-scheme:dark}
-    *{box-sizing:border-box}
-    html,body{min-height:100%;margin:0;background:#0A0A0A;color:#F0EDE6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{display:grid;place-items:center;padding:24px}
-    .box{max-width:460px;width:100%;text-align:center}
-    .chip{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;background:rgba(255,92,0,.14);border:1px solid rgba(255,92,0,.3);color:#FF8A4D;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
-    h1{margin:0 0 10px;font-size:26px}
-    p{margin:0 0 18px;color:#9A9590;line-height:1.5}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;text-decoration:none;background:#FF5C00;color:#fff;font-weight:700}
-    .sub{margin-top:14px;font-size:12px;color:#6B6862;line-height:1.5}
-  </style>
   <script>
-    (function() {
-      try {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
-        }
-      } catch (e) {}
-      const next = new URL('app.html', location.href);
-      next.hash = 'hub';
+    (function () {
+      const map = {
+        dashboard: 'dashboard.html',
+        crm: 'crm.html',
+        admin: 'admin.html',
+        app: 'app.html',
+        index: 'index.html',
+        hub: 'index.html'
+      };
+      const path = location.pathname.replace(/\/+$/, '');
+      const slug = path.split('/').pop();
+      const target = map[slug] || 'index.html';
+      const base = new URL('.', location.href).href;
+      const next = new URL(target, base);
       next.search = location.search;
-      setTimeout(() => location.replace(next.href), 30);
+      next.hash = location.hash;
+      location.replace(next.href);
     })();
   </script>
-  <noscript><meta http-equiv="refresh" content="0;url=app.html#hub"></noscript>
+  <noscript><meta http-equiv="refresh" content="0;url=index.html"></noscript>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0a0a;color:#f0ede6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .box{max-width:420px;text-align:center;padding:24px}
+    h1{font-size:22px;margin:0 0 10px}
+    p{color:#9a9590;margin:0;line-height:1.5}
+  </style>
 </head>
 <body>
   <div class="box">
-    <div class="chip">QU Suite</div>
-    <h1>QU Suite prêt</h1>
-    <p>Cette page ramène vers le hub proprement.</p>
-    <a class="btn" href="app.html#hub">Ouvrir maintenant</a>
-    <div class="sub">Cette page reste un accès direct, la superapp vit dans app.html.</div>
+    <h1>Redirection QU Suite</h1>
+    <p>On t’emmène vers la bonne page.</p>
   </div>
 </body>
 </html>
