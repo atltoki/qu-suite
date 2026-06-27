@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <script>
-window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html',cockpit:'cockpit2.html',index:'hub2.html',hub:'hub2.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
 </script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Quad Unlimited — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="qu-auth.js"></script>
 <style>
   :root {
     --gold: #C8A84B;
@@ -705,7 +707,7 @@ function quNormalizeDashStatus(status) {
 async function loadOrders() {
   try {
     const res = await fetch(`${SB_URL}/rest/v1/qu_orders?select=*&order=created_at.desc`, {
-      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+      headers: (window.QUAuth ? QUAuth.restHeaders() : { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -1136,14 +1138,14 @@ initApp();
 
   window.quNotify = function(message, tone='good') { flash(message, tone); };
   window.quGoPage = function(url, el) { go(url, el); };
-  window.quGoHub = function() { go('index.html'); };
+  window.quGoHub = function() { go('hub2.html'); };
   window.addEventListener('qu:notify', (e) => {
     const detail = e.detail || {};
     flash(detail.message || String(detail || 'Notification'), detail.tone || 'good');
   });
   window.addEventListener('qu:go', (e) => {
     const detail = e.detail || {};
-    go(detail.url || 'index.html', detail.el || null);
+    go(detail.url || 'hub2.html', detail.el || null);
   });
 
   if ('Notification' in window && Notification.permission === 'default') {
@@ -1155,15 +1157,15 @@ initApp();
 
 <script id="qu-shell-script">
 (() => {
-  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
+  const APPS = [{"id": "hub", "label": "Hub", "url": "hub2.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit2.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm2.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard2.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin2.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app2.html", "icon": "✦", "desc": "Outils terrain"}];
   const APP_ALIAS = {
-    'index.html':'hub',
-    'crm.html':'crm',
-    'dashboard.html':'dashboard',
-    'admin.html':'admin',
-    'app.html':'app'
+    'hub2.html':'hub',
+    'crm2.html':'crm',
+    'dashboard2.html':'dashboard',
+    'admin2.html':'admin',
+    'app2.html':'app'
   };
-  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  const currentFile = location.pathname.split('/').pop() || 'hub2.html';
   const currentId = APP_ALIAS[currentFile] || 'hub';
   const storageKey = 'qu-suite-shell-state-v2';
   const state = loadState() || {};

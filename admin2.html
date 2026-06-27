@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <script>
-window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html',cockpit:'cockpit2.html',index:'hub2.html',hub:'hub2.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -10,6 +10,7 @@ window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="qu-auth.js"></script>
 <script>
 const SB_URL = 'https://hofctcynzmqufgpqcavi.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8';
@@ -712,7 +713,7 @@ a{color:inherit;text-decoration:none}
       <div class="export-steps">
         <div class="export-step"><div class="step-num">1</div><div class="step-txt">Clique <strong>"Générer le code produits"</strong> ci-dessous — le texte apparaît dans la zone grise</div></div>
         <div class="export-step"><div class="step-num">2</div><div class="step-txt">Clique <strong>"Copier"</strong> pour le copier dans le presse-papier</div></div>
-        <div class="export-step"><div class="step-num">3</div><div class="step-txt">Ouvre ton <strong>index.html</strong> dans VS Code, cherche <strong>const PRODS=[</strong> avec Ctrl+F</div></div>
+        <div class="export-step"><div class="step-num">3</div><div class="step-txt">Ouvre ton <strong>hub2.html</strong> dans VS Code, cherche <strong>const PRODS=[</strong> avec Ctrl+F</div></div>
         <div class="export-step"><div class="step-num">4</div><div class="step-txt">Sélectionne tout depuis <strong>const PRODS=[</strong> jusqu'au <strong>];</strong> qui suit, et colle (Ctrl+V)</div></div>
         <div class="export-step"><div class="step-num">5</div><div class="step-txt">Sauvegarde et dépose sur <strong>Netlify</strong> — c'est en ligne !</div></div>
       </div>
@@ -1393,14 +1394,14 @@ updateBadge();
 
   window.quNotify = function(message, tone='good') { flash(message, tone); };
   window.quGoPage = function(url, el) { go(url, el); };
-  window.quGoHub = function() { go('index.html'); };
+  window.quGoHub = function() { go('hub2.html'); };
   window.addEventListener('qu:notify', (e) => {
     const detail = e.detail || {};
     flash(detail.message || String(detail || 'Notification'), detail.tone || 'good');
   });
   window.addEventListener('qu:go', (e) => {
     const detail = e.detail || {};
-    go(detail.url || 'index.html', detail.el || null);
+    go(detail.url || 'hub2.html', detail.el || null);
   });
 
   if ('Notification' in window && Notification.permission === 'default') {
@@ -1412,15 +1413,15 @@ updateBadge();
 
 <script id="qu-shell-script">
 (() => {
-  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
+  const APPS = [{"id": "hub", "label": "Hub", "url": "hub2.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit2.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm2.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard2.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin2.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app2.html", "icon": "✦", "desc": "Outils terrain"}];
   const APP_ALIAS = {
-    'index.html':'hub',
-    'crm.html':'crm',
-    'dashboard.html':'dashboard',
-    'admin.html':'admin',
-    'app.html':'app'
+    'hub2.html':'hub',
+    'crm2.html':'crm',
+    'dashboard2.html':'dashboard',
+    'admin2.html':'admin',
+    'app2.html':'app'
   };
-  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  const currentFile = location.pathname.split('/').pop() || 'hub2.html';
   const currentId = APP_ALIAS[currentFile] || 'hub';
   const storageKey = 'qu-suite-shell-state-v2';
   const state = loadState() || {};

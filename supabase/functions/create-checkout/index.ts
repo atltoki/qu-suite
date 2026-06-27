@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
-      success_url: `${origin}/index.html?checkout=success`,
+      success_url: `${origin}/hub2.html?checkout=success`,
       cancel_url: `${origin}/account.html?checkout=cancel`,
       subscription_data: { metadata: { supabase_user_id: user.id, plan: body.plan || 'pro' } },
       metadata: { supabase_user_id: user.id, plan: body.plan || 'pro' },

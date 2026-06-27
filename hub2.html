@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <script>
-window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
+window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html',cockpit:'cockpit2.html',index:'hub2.html',hub:'hub2.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard2.html',crm:'crm2.html',admin:'admin2.html',app:'app2.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,6 +10,8 @@ window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^
 <meta name="theme-color" content="#0A0A0A">
 <title>QU Suite — Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="qu-auth.js"></script>
 <style>
 :root{--o:#FF5C00;--o2:#FF7A2E;--o-dim:rgba(255,92,0,.1);--bg:#0A0A0A;--bg2:#111;--bg3:#181818;--bg4:#222;--border:rgba(255,92,0,.12);--border2:rgba(255,255,255,.06);--text:#F0EDE6;--muted:#6B6862;--muted2:#9A9590;--green:#22C55E;--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -274,27 +276,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);-we
 
   <div class="sec" style="margin-top:4px"><div class="sec-lbl">Applications</div></div>
   <div class="app-grid">
-    <!-- ✅ FIX: Dashboard → dashboard.html -->
-    <a class="app-card" href="dashboard.html">
+    <!-- ✅ FIX: Dashboard → dashboard2.html -->
+    <a class="app-card" href="dashboard2.html">
       <span class="ac-icon">⬡</span>
       <div class="ac-name">Dashboard</div>
       <div class="ac-desc">KPIs, commandes récentes, alertes stock</div>
       <div class="ac-status"><div class="status-dot dot-green"></div><span>Opérationnel</span></div>
     </a>
-    <a class="app-card" href="app.html">
+    <a class="app-card" href="app2.html">
       <span class="ac-icon">⚡</span>
       <div class="ac-badge" id="badge-supapp" style="display:none">0</div>
       <div class="ac-name">Scan / Picking</div>
       <div class="ac-desc">Picking, scan, expéditions, suivi terrain</div>
       <div class="ac-status"><div class="status-dot dot-green"></div><span>Opérationnel</span></div>
     </a>
-    <a class="app-card" href="crm.html">
+    <a class="app-card" href="crm2.html">
       <span class="ac-icon">◎</span>
       <div class="ac-name">CRM</div>
       <div class="ac-desc">Clients, devis, pipeline, expéditions</div>
       <div class="ac-status"><div class="status-dot dot-orange"></div><span>Auth requise</span></div>
     </a>
-    <a class="app-card" href="admin.html">
+    <a class="app-card" href="admin2.html">
       <span class="ac-icon">◈</span>
       <div class="ac-name">Admin</div>
       <div class="ac-desc">Produits, SEO, export code</div>
@@ -304,24 +306,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);-we
 
   <div class="sec"><div class="sec-lbl">Raccourcis</div></div>
   <div class="qa-row">
-    <a class="qa" href="cockpit.html"><div class="qa-icon">🧠</div><div class="qa-lbl">Ouvrir cockpit</div></a>
-    <a class="qa" href="app.html#orders"><div class="qa-icon">🛒</div><div class="qa-lbl">Nouvelle commande</div></a>
-    <a class="qa" href="app.html#picking"><div class="qa-icon">📷</div><div class="qa-lbl">Démarrer picking</div></a>
-    <a class="qa" href="crm.html#factures"><div class="qa-icon">🧾</div><div class="qa-lbl">Nouvelle facture</div></a>
-    <a class="qa" href="crm.html#expeditions"><div class="qa-icon">🚢</div><div class="qa-lbl">Réceptions</div></a>
-    <a class="qa" href="dashboard.html"><div class="qa-icon">📊</div><div class="qa-lbl">Analytics</div></a>
+    <a class="qa" href="cockpit2.html"><div class="qa-icon">🧠</div><div class="qa-lbl">Ouvrir cockpit</div></a>
+    <a class="qa" href="app2.html#orders"><div class="qa-icon">🛒</div><div class="qa-lbl">Nouvelle commande</div></a>
+    <a class="qa" href="app2.html#picking"><div class="qa-icon">📷</div><div class="qa-lbl">Démarrer picking</div></a>
+    <a class="qa" href="crm2.html#factures"><div class="qa-icon">🧾</div><div class="qa-lbl">Nouvelle facture</div></a>
+    <a class="qa" href="crm2.html#expeditions"><div class="qa-icon">🚢</div><div class="qa-lbl">Réceptions</div></a>
+    <a class="qa" href="dashboard2.html"><div class="qa-icon">📊</div><div class="qa-lbl">Analytics</div></a>
   </div>
 
-  <div class="sec"><div class="sec-lbl">Commandes récentes</div><button class="sec-action" onclick="location.href='app.html'">Voir tout →</button></div>
+  <div class="sec"><div class="sec-lbl">Commandes récentes</div><button class="sec-action" onclick="location.href='app2.html'">Voir tout →</button></div>
   <div id="orders-list"><div class="empty-state">Chargement…</div></div>
 
-  <div class="sec"><div class="sec-lbl">Pipeline CRM</div><button class="sec-action" onclick="location.href='crm.html'">Ouvrir →</button></div>
+  <div class="sec"><div class="sec-lbl">Pipeline CRM</div><button class="sec-action" onclick="location.href='crm2.html'">Ouvrir →</button></div>
   <div id="pipeline-list"><div class="empty-state">Chargement…</div></div>
 
-  <div class="sec"><div class="sec-lbl">Réceptions en cours</div><button class="sec-action" onclick="location.href='crm.html#expeditions'">Détails →</button></div>
+  <div class="sec"><div class="sec-lbl">Réceptions en cours</div><button class="sec-action" onclick="location.href='crm2.html#expeditions'">Détails →</button></div>
   <div id="exp-list"><div class="empty-state">Chargement…</div></div>
 
-  <div class="sec"><div class="sec-lbl">Alertes stock</div><button class="sec-action" onclick="location.href='app.html#products'">Gérer →</button></div>
+  <div class="sec"><div class="sec-lbl">Alertes stock</div><button class="sec-action" onclick="location.href='app2.html#products'">Gérer →</button></div>
   <div id="stock-list"><div class="empty-state">Chargement…</div></div>
 
   <div class="footer">QUAD UNLIMITED · QU SUITE · 2026</div>
@@ -332,7 +334,7 @@ const SB_URL='https://hofctcynzmqufgpqcavi.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8';
 
 async function sbFetch(table,params=''){
-  const res=await fetch(`${SB_URL}/rest/v1/${table}?${params}`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const res=await fetch(`${SB_URL}/rest/v1/${table}?${params}`,{headers:(window.QUAuth?QUAuth.restHeaders():{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`})});
   if(!res.ok)throw new Error(res.status);
   return res.json();
 }
@@ -362,7 +364,7 @@ async function loadOrders(){
     document.getElementById('kpi-orders-sub').textContent=`${pend} en attente`;
     if(pend>0){const b=document.getElementById('badge-supapp');b.textContent=pend;b.style.display='flex';const c=document.getElementById('sb-count');c.textContent=pend;c.style.display='block';}
     const el=document.getElementById('orders-list');
-    el.innerHTML=data.slice(0,5).map(o=>`<div class="order-row" onclick="location.href='app.html'"><div><div class="or-name">${o.customer_name||o.client_name||'—'}</div><div class="or-meta">${o.order_ref||o.id?.slice(0,8)||'—'} · ${badge(o.status)}</div></div><div class="or-right"><div class="or-price">${fmt(o.total)}</div><div class="or-date">${timeAgo(o.created_at)}</div></div></div>`).join('')||'<div class="empty-state">Aucune commande</div>';
+    el.innerHTML=data.slice(0,5).map(o=>`<div class="order-row" onclick="location.href='app2.html'"><div><div class="or-name">${o.customer_name||o.client_name||'—'}</div><div class="or-meta">${o.order_ref||o.id?.slice(0,8)||'—'} · ${badge(o.status)}</div></div><div class="or-right"><div class="or-price">${fmt(o.total)}</div><div class="or-date">${timeAgo(o.created_at)}</div></div></div>`).join('')||'<div class="empty-state">Aucune commande</div>';
     document.getElementById('dot-sb').className='status-dot dot-green dot-pulse';
   }catch(e){document.getElementById('orders-list').innerHTML='<div class="empty-state">qu_orders non disponible</div>';document.getElementById('dot-sb').className='status-dot dot-gray';}
 }
@@ -376,13 +378,13 @@ async function loadCRM(){
     document.getElementById('kpi-pipeline').textContent=fmt(pip);
     document.getElementById('kpi-pipeline-sub').textContent=`Signé: ${fmt(signed)}`;
     const act=devis.filter(d=>!['Perdu','Signe'].includes(d.etape)).sort((a,b)=>(b.montant||0)-(a.montant||0)).slice(0,4);
-    document.getElementById('pipeline-list').innerHTML=act.length?act.map(d=>`<div class="pipe-row" onclick="location.href='crm.html'"><div><div style="font-size:12px;font-weight:600">${d.objet?.slice(0,32)||d.ref}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${d.ref} · ${badge(d.etape)}</div></div><div class="pipe-val">${fmt(d.montant)}</div></div>`).join(''):'<div class="empty-state">Aucun devis actif</div>';
+    document.getElementById('pipeline-list').innerHTML=act.length?act.map(d=>`<div class="pipe-row" onclick="location.href='crm2.html'"><div><div style="font-size:12px;font-weight:600">${d.objet?.slice(0,32)||d.ref}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${d.ref} · ${badge(d.etape)}</div></div><div class="pipe-val">${fmt(d.montant)}</div></div>`).join(''):'<div class="empty-state">Aucun devis actif</div>';
   }catch(e){document.getElementById('pipeline-list').innerHTML='<div class="empty-state">CRM hors ligne</div>';}
 
   try{
     const eRows=await sbFetch('expeditions','select=id,data');
     const exps=eRows.map(r=>r.data).filter(Boolean).filter(e=>!['Receptionne','Annule'].includes(e.statut));
-    document.getElementById('exp-list').innerHTML=exps.length?exps.slice(0,4).map(e=>`<div class="alert-row" onclick="location.href='crm.html'"><div><div class="ar-name">${e.ref||'—'}</div><div class="ar-sub">${e.portDepart||'—'} → ${e.portArrivee||'—'} · ${e.pieces||0} pcs</div></div>${badge(e.statut)}</div>`).join(''):'<div class="empty-state">Aucune réception en cours</div>';
+    document.getElementById('exp-list').innerHTML=exps.length?exps.slice(0,4).map(e=>`<div class="alert-row" onclick="location.href='crm2.html'"><div><div class="ar-name">${e.ref||'—'}</div><div class="ar-sub">${e.portDepart||'—'} → ${e.portArrivee||'—'} · ${e.pieces||0} pcs</div></div>${badge(e.statut)}</div>`).join(''):'<div class="empty-state">Aucune réception en cours</div>';
   }catch(e){document.getElementById('exp-list').innerHTML='<div class="empty-state">Expéditions non disponibles</div>';}
 }
 
@@ -391,13 +393,13 @@ async function loadProducts(){
     const data=await sbFetch('qu_products','select=*&eq.active=true');
     const low=data.filter(p=>p.stock<=(p.stock_alert||5));
     document.getElementById('kpi-rup').textContent=data.filter(p=>p.stock===0).length;
-    document.getElementById('stock-list').innerHTML=low.length?low.slice(0,5).map(p=>`<div class="alert-row ${p.stock===0?'critical':'warn'}" onclick="location.href='app.html'"><div><div class="ar-name">${p.name}</div><div class="ar-sub">${p.reference||'—'} · ${p.location||'—'}</div></div><div class="ar-stock" style="color:${p.stock===0?'var(--red)':'var(--yellow)'}">${p.stock}</div></div>`).join(''):'<div class="empty-state" style="color:var(--green)">✅ Tous les stocks OK</div>';
+    document.getElementById('stock-list').innerHTML=low.length?low.slice(0,5).map(p=>`<div class="alert-row ${p.stock===0?'critical':'warn'}" onclick="location.href='app2.html'"><div><div class="ar-name">${p.name}</div><div class="ar-sub">${p.reference||'—'} · ${p.location||'—'}</div></div><div class="ar-stock" style="color:${p.stock===0?'var(--red)':'var(--yellow)'}">${p.stock}</div></div>`).join(''):'<div class="empty-state" style="color:var(--green)">✅ Tous les stocks OK</div>';
   }catch(e){
     try{
       const prods=JSON.parse(localStorage.getItem('qu_prods')||'[]');
       const low=prods.filter(p=>p.stock<=3);
       document.getElementById('kpi-rup').textContent=prods.filter(p=>p.stock===0).length;
-      document.getElementById('stock-list').innerHTML=low.length?low.slice(0,5).map(p=>`<div class="alert-row ${p.stock===0?'critical':'warn'}" onclick="location.href='admin.html'"><div><div class="ar-name">${p.shortName||p.name}</div><div class="ar-sub">Admin · ${p.sub||'—'}</div></div><div class="ar-stock" style="color:${p.stock===0?'var(--red)':'var(--yellow)'}">${p.stock}</div></div>`).join(''):'<div class="empty-state" style="color:var(--green)">✅ Tous les stocks OK</div>';
+      document.getElementById('stock-list').innerHTML=low.length?low.slice(0,5).map(p=>`<div class="alert-row ${p.stock===0?'critical':'warn'}" onclick="location.href='admin2.html'"><div><div class="ar-name">${p.shortName||p.name}</div><div class="ar-sub">Admin · ${p.sub||'—'}</div></div><div class="ar-stock" style="color:${p.stock===0?'var(--red)':'var(--yellow)'}">${p.stock}</div></div>`).join(''):'<div class="empty-state" style="color:var(--green)">✅ Tous les stocks OK</div>';
     }catch(e2){document.getElementById('stock-list').innerHTML='<div class="empty-state">Stock non disponible</div>';}
   }
 }
@@ -475,14 +477,14 @@ setInterval(refreshAll,120000);
 
   window.quNotify = function(message, tone='good') { flash(message, tone); };
   window.quGoPage = function(url, el) { go(url, el); };
-  window.quGoHub = function() { go('index.html'); };
+  window.quGoHub = function() { go('hub2.html'); };
   window.addEventListener('qu:notify', (e) => {
     const detail = e.detail || {};
     flash(detail.message || String(detail || 'Notification'), detail.tone || 'good');
   });
   window.addEventListener('qu:go', (e) => {
     const detail = e.detail || {};
-    go(detail.url || 'index.html', detail.el || null);
+    go(detail.url || 'hub2.html', detail.el || null);
   });
 
   if ('Notification' in window && Notification.permission === 'default') {
@@ -510,15 +512,15 @@ setInterval(refreshAll,120000);
 
 <script id="qu-shell-script">
 (() => {
-  const APPS = [{"id": "hub", "label": "Hub", "url": "index.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app.html", "icon": "✦", "desc": "Outils terrain"}];
+  const APPS = [{"id": "hub", "label": "Hub", "url": "hub2.html", "icon": "⌂", "desc": "Portail et raccourcis"}, {"id": "cockpit", "label": "Cockpit", "url": "cockpit2.html", "icon": "🧠", "desc": "Centre de contrôle"}, {"id": "crm", "label": "CRM", "url": "crm2.html", "icon": "◫", "desc": "Clients et pipeline"}, {"id": "dashboard", "label": "Dashboard", "url": "dashboard2.html", "icon": "▣", "desc": "Vue d’ensemble"}, {"id": "admin", "label": "Admin", "url": "admin2.html", "icon": "⚙", "desc": "Stock et commandes"}, {"id": "app", "label": "Scan / Picking", "url": "app2.html", "icon": "✦", "desc": "Outils terrain"}];
   const APP_ALIAS = {
-    'index.html':'hub',
-    'crm.html':'crm',
-    'dashboard.html':'dashboard',
-    'admin.html':'admin',
-    'app.html':'app'
+    'hub2.html':'hub',
+    'crm2.html':'crm',
+    'dashboard2.html':'dashboard',
+    'admin2.html':'admin',
+    'app2.html':'app'
   };
-  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  const currentFile = location.pathname.split('/').pop() || 'hub2.html';
   const currentId = APP_ALIAS[currentFile] || 'hub';
   const storageKey = 'qu-suite-shell-state-v2';
   const state = loadState() || {};

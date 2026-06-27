@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9,6 +9,7 @@
 <title>QU CRM</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="qu-auth.js"></script>
 <style>
 :root{--bg:#0A0A0A;--bg2:#111;--bg3:#171717;--line:rgba(255,255,255,.08);--line2:rgba(255,92,0,.16);--text:#F0EDE6;--muted:#9A9590;--o:#FF5C00;--green:#22C55E;--red:#EF4444;--blue:#3B82F6;--yellow:#F59E0B;--purple:#A855F7;--shadow:0 24px 80px rgba(0,0,0,.42)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -142,12 +143,12 @@ const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const ENTITY_CONFIG = {"clients": {"label": "Clients", "icon": "◫", "desc": "Contacts et pipeline", "fields": [{"key": "name", "label": "Nom", "type": "text"}, {"key": "email", "label": "Email", "type": "text"}, {"key": "phone", "label": "Téléphone", "type": "text"}, {"key": "company", "label": "Entreprise", "type": "text"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Actif", "Prospect", "VIP", "Inactif"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["name", "email", "phone", "company", "status", "notes"]}, "devis": {"label": "Devis", "icon": "✎", "desc": "Offres commerciales", "fields": [{"key": "title", "label": "Titre", "type": "text"}, {"key": "client", "label": "Client", "type": "text"}, {"key": "amount", "label": "Montant", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Nouveau", "Envoyé", "Accepté", "Refusé"]}, {"key": "date", "label": "Date", "type": "date"}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["title", "client", "amount", "status", "date", "notes"]}, "taches": {"label": "Tâches", "icon": "☑", "desc": "Relances et opérations", "fields": [{"key": "title", "label": "Titre", "type": "text"}, {"key": "assignee", "label": "Assigné à", "type": "text"}, {"key": "due", "label": "Échéance", "type": "date"}, {"key": "status", "label": "Statut", "type": "select", "options": ["À faire", "En cours", "Bloqué", "Terminé"]}, {"key": "priority", "label": "Priorité", "type": "select", "options": ["Haute", "Moyenne", "Basse"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["title", "assignee", "due", "status", "priority", "notes"]}, "campagnes": {"label": "Campagnes", "icon": "✦", "desc": "Marketing et actions", "fields": [{"key": "name", "label": "Nom", "type": "text"}, {"key": "channel", "label": "Canal", "type": "text"}, {"key": "budget", "label": "Budget", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Brouillon", "Active", "Pause", "Terminée"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["name", "channel", "budget", "status", "notes"]}, "expeditions": {"label": "Expéditions", "icon": "➜", "desc": "Réceptions et envois", "fields": [{"key": "reference", "label": "Référence", "type": "text"}, {"key": "carrier", "label": "Transporteur", "type": "text"}, {"key": "tracking", "label": "Tracking", "type": "text"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Préparée", "En route", "Livrée", "Retournée"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["reference", "carrier", "tracking", "status", "notes"]}, "factures": {"label": "Factures", "icon": "₣", "desc": "Facturation et paiements", "fields": [{"key": "number", "label": "Numéro", "type": "text"}, {"key": "client", "label": "Client", "type": "text"}, {"key": "total", "label": "Total", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Brouillon", "Émise", "Payée", "En retard"]}, {"key": "due_date", "label": "Échéance", "type": "date"}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["number", "client", "total", "status", "due_date", "notes"]}};
 
 const APPS = [
-  { id:'hub', label:'Hub', url:'index.html', icon:'⌂', desc:'Portail et raccourcis' },
-  { id:'cockpit', label:'Cockpit', url:'cockpit.html', icon:'🧠', desc:'Centre de contrôle' },
-  { id:'crm', label:'CRM', url:'crm.html', icon:'◫', desc:'Clients et pipeline' },
-  { id:'dashboard', label:'Dashboard', url:'dashboard.html', icon:'▣', desc:'Vue d’ensemble' },
-  { id:'admin', label:'Admin', url:'admin.html', icon:'⚙', desc:'Stock et commandes' },
-  { id:'app', label:'Scan / Picking', url:'app.html', icon:'✦', desc:'Outils terrain' },
+  { id:'hub', label:'Hub', url:'hub2.html', icon:'⌂', desc:'Portail et raccourcis' },
+  { id:'cockpit', label:'Cockpit', url:'cockpit2.html', icon:'🧠', desc:'Centre de contrôle' },
+  { id:'crm', label:'CRM', url:'crm2.html', icon:'◫', desc:'Clients et pipeline' },
+  { id:'dashboard', label:'Dashboard', url:'dashboard2.html', icon:'▣', desc:'Vue d’ensemble' },
+  { id:'admin', label:'Admin', url:'admin2.html', icon:'⚙', desc:'Stock et commandes' },
+  { id:'app', label:'Scan / Picking', url:'app2.html', icon:'✦', desc:'Outils terrain' },
 ];
 
 const state = {
@@ -406,11 +407,11 @@ function renderEntity(table) {
   sec.innerHTML = `
     <div class="toolbar">
       <button class="pill" onclick="setSection('overview')">Vue d’ensemble</button>
-      <button class="pill" onclick="go('index.html')">Hub</button>
-      <button class="pill" onclick="go('cockpit.html')">Cockpit</button>
-      <button class="pill" onclick="go('app.html')">Scan</button>
-      <button class="pill" onclick="go('dashboard.html')">Dashboard</button>
-      <button class="pill" onclick="go('admin.html')">Admin</button>
+      <button class="pill" onclick="go('hub2.html')">Hub</button>
+      <button class="pill" onclick="go('cockpit2.html')">Cockpit</button>
+      <button class="pill" onclick="go('app2.html')">Scan</button>
+      <button class="pill" onclick="go('dashboard2.html')">Dashboard</button>
+      <button class="pill" onclick="go('admin2.html')">Admin</button>
     </div>
     ${renderForm(table, item)}
     <div style="height:10px"></div>

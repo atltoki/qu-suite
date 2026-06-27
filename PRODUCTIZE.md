@@ -15,7 +15,29 @@ Ce qui a été ajouté :
 | `landing.html` | Page de vente publique (la pièce qui convertit) |
 | `supabase/functions/create-checkout/` | Crée la session Stripe Checkout / portail |
 | `supabase/functions/stripe-webhook/` | Met à jour l'abonnement (active/coupe l'accès) |
-| `index/dashboard/app/crm/admin/cockpit.html` | Protégées par la garde `data-qu-gate="access"` |
+| `hub2/app2/crm2/dashboard2/admin2/cockpit2.html` | **Copies gated** de l'app, destinées aux clients (`data-qu-gate="access"`) |
+
+> 🛡️ **Tes fichiers d'origine** (`index/app/crm/dashboard/admin/cockpit.html`)
+> ne sont **pas modifiés** — ils restent ton app perso. Tout le SaaS vit dans
+> des fichiers neufs (suffixe `2` + les pages d'auth). Tu peux merger sans
+> rien casser de ce que tu utilises.
+
+### Architecture en deux suites parallèles
+
+```
+PUBLIC                         CLIENT (payant, isolé)         TOI (perso, inchangé)
+landing.html  →  login.html  →  hub2.html ─┬─ app2.html        index.html ─┬─ app.html
+                 account.html               ├─ crm2.html        (ungated)   ├─ crm.html
+                 (paiement Stripe)          ├─ dashboard2.html              ├─ dashboard.html
+                                            ├─ admin2.html                  ├─ admin.html
+                                            └─ cockpit2.html                └─ cockpit.html
+```
+
+Les deux suites tapent le **même Supabase**, mais la RLS isole les données par
+utilisateur. Une fois la RLS active, **même tes pages perso non-gated sont
+sûres** : sans session connectée → aucune ligne renvoyée ; avec ta session →
+tes données à toi. Tu continues donc à utiliser tes fichiers d'origine
+normalement (connecte-toi une fois via le SaaS et ta session est partagée).
 
 ---
 
@@ -79,9 +101,10 @@ supabase functions deploy stripe-webhook  --no-verify-jwt
 ### 6. Tester le parcours complet
 1. Ouvre `landing.html` → **Essai gratuit** → crée un compte.
 2. Tu arrives connecté, en essai 14 j → l'app est accessible.
-3. `account.html` → **Choisir Pro** → paie avec la carte test `4242 4242 4242 4242`.
-4. Vérifie dans Supabase que `profiles.subscription_status = 'active'`.
-5. Déconnecte-toi, ouvre une page protégée → tu es bien renvoyé vers `login.html`.
+3. Tu atterris sur `hub2.html` (le hub client gated) → les modules `2` marchent.
+4. `account.html` → **Choisir Pro** → paie avec la carte test `4242 4242 4242 4242`.
+5. Vérifie dans Supabase que `profiles.subscription_status = 'active'`.
+6. Déconnecte-toi, ouvre `hub2.html` → tu es bien renvoyé vers `login.html`.
 
 ---
 
@@ -90,11 +113,13 @@ supabase functions deploy stripe-webhook  --no-verify-jwt
 - **Un seul projet Supabase**, partagé par tous les clients. La clé `anon`
   publique est sans danger **parce que la RLS** filtre tout par `auth.uid()`.
 - À l'inscription, un trigger crée un `profile` avec **14 jours d'essai**.
-- `qu-auth.js` pose une **garde** (`data-qu-gate="access"`) sur chaque page :
+- `qu-auth.js` pose une **garde** (`data-qu-gate="access"`) sur les pages `2` :
   pas connecté → `login.html` ; essai expiré / non abonné → `account.html`.
-- Les pages en `supabase-js` (app, crm, admin, cockpit) partagent
-  automatiquement la session ; les pages en REST brut (index, dashboard)
+- Les pages `2` en `supabase-js` (app2, crm2, admin2, cockpit2) partagent
+  automatiquement la session ; celles en REST brut (hub2, dashboard2)
   utilisent `QUAuth.restHeaders()` pour envoyer le jeton de l'utilisateur.
+- Les pages `2` ne pointent QUE vers d'autres pages `2` (navigation isolée) ;
+  tes fichiers d'origine ne sont jamais référencés par le SaaS.
 - Le **webhook Stripe** est la seule source de vérité de l'abonnement : il
   passe `subscription_status` à `active` / `past_due` / `canceled`.
 
@@ -102,8 +127,10 @@ supabase functions deploy stripe-webhook  --no-verify-jwt
 
 ## Reste à faire (phase 2, optionnel)
 
-- [ ] Retirer le **modal « Configuration Supabase »** d'`app.html` (relique
+- [ ] Retirer le **modal « Configuration Supabase »** d'`app2.html` (relique
       mono-locataire : un client ne doit pas pouvoir changer la base).
+- [ ] Quand le SaaS est validé, héberger les pages `2` sur un domaine/déploiement
+      distinct de ton app perso (ou retirer les originaux du déploiement client).
 - [ ] Créer explicitement les **tables CRM** (`contacts`, `deals`, …) avec le
       patron RLS commenté en bas de la migration.
 - [ ] Page d'**onboarding** post-inscription (logo, première donnée).
