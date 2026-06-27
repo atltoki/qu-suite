@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<title>QU Suite — Connexion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#1A1A1A;--border:#2A2A2A;--text:#F0EDE6;--text2:#A8A5A0;--muted:#6B6862;--orange:#FF5C00;--orange2:#FF7A2E;--green:#22C55E;--red:#EF4444;--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Barlow Condensed',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-font-smoothing:antialiased}
+.card{width:100%;max-width:400px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:34px 28px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;line-height:.9;margin-bottom:4px}
+.logo span{color:var(--orange)}
+.sub{color:var(--text2);font-size:15px;margin-bottom:26px}
+.tabs{display:flex;gap:6px;margin-bottom:22px;background:var(--bg3);padding:4px;border-radius:10px}
+.tab{flex:1;text-align:center;padding:10px;border-radius:7px;cursor:pointer;font-weight:600;color:var(--text2);font-size:15px;text-transform:uppercase;letter-spacing:.5px;transition:.15s}
+.tab.active{background:var(--orange);color:#0A0A0A}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;color:var(--text);font-family:inherit;font-size:16px;outline:none;transition:.15s}
+.field input:focus{border-color:var(--orange)}
+.hide{display:none}
+.btn{width:100%;background:var(--orange);color:#0A0A0A;border:none;border-radius:9px;padding:14px;font-family:inherit;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:8px;transition:.15s}
+.btn:hover{background:var(--orange2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.msg{margin-top:16px;padding:12px;border-radius:9px;font-size:14px;display:none}
+.msg.err{display:block;background:rgba(239,68,68,.12);color:#FCA5A5;border:1px solid rgba(239,68,68,.3)}
+.msg.ok{display:block;background:rgba(34,197,94,.12);color:#86EFAC;border:1px solid rgba(34,197,94,.3)}
+.foot{margin-top:18px;text-align:center;font-size:13px;color:var(--muted)}
+.foot a{color:var(--orange);cursor:pointer;text-decoration:none}
+.trial{margin-top:14px;text-align:center;font-size:13px;color:var(--green)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">QU<span>·</span>SUITE</div>
+  <div class="sub">Ton ERP, CRM & cockpit. En un seul endroit.</div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabIn" onclick="setMode('in')">Connexion</div>
+    <div class="tab" id="tabUp" onclick="setMode('up')">Inscription</div>
+  </div>
+
+  <form id="form" onsubmit="return submitForm(event)">
+    <div class="field hide" id="nameField">
+      <label>Nom / Entreprise</label>
+      <input type="text" id="name" autocomplete="organization" placeholder="Quad Unlimited">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" autocomplete="email" required placeholder="toi@exemple.com">
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" id="password" autocomplete="current-password" required minlength="6" placeholder="••••••••">
+    </div>
+    <button class="btn" id="submitBtn" type="submit">Se connecter</button>
+    <div class="trial hide" id="trialNote">✦ 14 jours d'essai gratuit · sans carte</div>
+  </form>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="foot" id="forgotRow"><a onclick="forgot()">Mot de passe oublié ?</a></div>
+</div>
+
+<script src="qu-auth.js"></script>
+<script>
+var mode = 'in';
+function qs(){ var p={}; location.search.replace(/^\?/,'').split('&').forEach(function(kv){var x=kv.split('=');if(x[0])p[x[0]]=decodeURIComponent(x[1]||'');}); return p; }
+var NEXT = qs().next || 'index.html';
+
+function setMode(m){
+  mode = m;
+  document.getElementById('tabIn').classList.toggle('active', m==='in');
+  document.getElementById('tabUp').classList.toggle('active', m==='up');
+  document.getElementById('nameField').classList.toggle('hide', m!=='up');
+  document.getElementById('trialNote').classList.toggle('hide', m!=='up');
+  document.getElementById('forgotRow').classList.toggle('hide', m!=='in');
+  document.getElementById('submitBtn').textContent = m==='up' ? "Créer mon compte" : "Se connecter";
+  document.getElementById('password').autocomplete = m==='up' ? 'new-password' : 'current-password';
+  showMsg('', '');
+}
+
+function showMsg(text, kind){
+  var el = document.getElementById('msg');
+  el.className = 'msg' + (kind ? ' ' + kind : '');
+  el.textContent = text || '';
+}
+
+async function submitForm(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  var email = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+  btn.disabled = true;
+  try {
+    if (mode === 'up') {
+      var name = document.getElementById('name').value.trim();
+      var r = await QUAuth.signUp(email, password, { full_name: name });
+      if (r.error) throw r.error;
+      if (r.data && r.data.session) { location.href = NEXT; return false; }
+      showMsg("Compte créé ! Vérifie ta boîte mail pour confirmer, puis connecte-toi.", 'ok');
+      setMode('in');
+    } else {
+      var s = await QUAuth.signIn(email, password);
+      if (s.error) throw s.error;
+      location.href = NEXT;
+    }
+  } catch (err) {
+    showMsg(translate(err.message || 'Erreur'), 'err');
+  } finally {
+    btn.disabled = false;
+  }
+  return false;
+}
+
+async function forgot(){
+  var email = document.getElementById('email').value.trim();
+  if (!email) { showMsg("Entre ton email d'abord.", 'err'); return; }
+  var r = await QUAuth.resetPassword(email);
+  if (r.error) showMsg(translate(r.error.message), 'err');
+  else showMsg("Email de réinitialisation envoyé.", 'ok');
+}
+
+function translate(m){
+  m = String(m||'');
+  if (/invalid login/i.test(m)) return "Email ou mot de passe incorrect.";
+  if (/already registered/i.test(m)) return "Cet email a déjà un compte. Connecte-toi.";
+  if (/email not confirmed/i.test(m)) return "Confirme ton email avant de te connecter.";
+  if (/password should be/i.test(m)) return "Mot de passe trop court (6 caractères min).";
+  return m;
+}
+
+// Déjà connecté ? On saute la page.
+(async function(){
+  try { var u = await QUAuth.getUser(); if (u) location.replace(NEXT); } catch(e){}
+  if (qs().mode === 'up') setMode('up');
+})();
+</script>
+</body>
+</html>

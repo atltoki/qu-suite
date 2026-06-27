@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr" data-qu-gate="auth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<title>QU Suite — Mon compte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#1A1A1A;--border:#2A2A2A;--text:#F0EDE6;--text2:#A8A5A0;--muted:#6B6862;--orange:#FF5C00;--orange2:#FF7A2E;--green:#22C55E;--yellow:#EAB308;--red:#EF4444;--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Barlow Condensed',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px}
+.logo span{color:var(--orange)}
+.link{color:var(--text2);font-size:14px;cursor:pointer;text-decoration:none}
+.banner{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);color:#FDE68A;padding:14px 16px;border-radius:var(--radius);margin-bottom:20px;font-size:15px;display:none}
+.banner.show{display:block}
+.status{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:24px}
+.status h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:14px;color:var(--text2)}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:16px}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--muted)}
+.pill{display:inline-block;padding:3px 11px;border-radius:20px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.pill.active{background:rgba(34,197,94,.15);color:#86EFAC}
+.pill.trialing{background:rgba(234,179,8,.15);color:#FDE68A}
+.pill.none,.pill.canceled,.pill.past_due{background:rgba(239,68,68,.15);color:#FCA5A5}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:560px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative}
+.plan.feat{border-color:var(--orange)}
+.plan .tag{position:absolute;top:-10px;right:16px;background:var(--orange);color:#0A0A0A;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.plan h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px}
+.plan .price{font-size:34px;font-weight:700;margin:6px 0}
+.plan .price small{font-size:15px;color:var(--muted);font-weight:400}
+.plan ul{list-style:none;margin:14px 0;font-size:15px;color:var(--text2)}
+.plan li{padding:5px 0;padding-left:22px;position:relative}
+.plan li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+.btn{width:100%;border:none;border-radius:9px;padding:13px;font-family:inherit;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:.15s}
+.btn.primary{background:var(--orange);color:#0A0A0A}
+.btn.primary:hover{background:var(--orange2)}
+.btn.ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{color:#FCA5A5;font-size:14px;margin-top:10px;min-height:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">QU<span>·</span>SUITE</div>
+    <a class="link" onclick="QUAuth.signOut()">Déconnexion ↩</a>
+  </div>
+
+  <div class="banner" id="banner">Ton accès est inactif. Choisis un plan ci-dessous pour réactiver QU Suite.</div>
+
+  <div class="status">
+    <h2>Mon abonnement</h2>
+    <div class="row"><span class="k">Email</span><span id="vEmail">—</span></div>
+    <div class="row"><span class="k">Statut</span><span id="vStatus">—</span></div>
+    <div class="row"><span class="k">Plan</span><span id="vPlan">—</span></div>
+    <div class="row"><span class="k">Renouvellement</span><span id="vRenew">—</span></div>
+  </div>
+
+  <div class="plans">
+    <div class="plan">
+      <h3>Starter</h3>
+      <div class="price">29€<small>/mois</small></div>
+      <ul>
+        <li>CRM + Dashboard</li>
+        <li>Scan & commandes</li>
+        <li>1 utilisateur</li>
+        <li>Données temps réel</li>
+      </ul>
+      <button class="btn ghost" data-plan="starter" onclick="checkout('starter',this)">Choisir Starter</button>
+    </div>
+    <div class="plan feat">
+      <div class="tag">Populaire</div>
+      <h3>Pro</h3>
+      <div class="price">79€<small>/mois</small></div>
+      <ul>
+        <li>Tout Starter +</li>
+        <li>Admin + Cockpit + Facturation</li>
+        <li>Suivi de colis & tokens</li>
+        <li>Support prioritaire</li>
+      </ul>
+      <button class="btn primary" data-plan="pro" onclick="checkout('pro',this)">Choisir Pro</button>
+    </div>
+  </div>
+
+  <button class="btn ghost" id="portalBtn" style="display:none" onclick="portal(this)">Gérer mon abonnement / facture</button>
+  <div class="err" id="err"></div>
+</div>
+
+<script src="qu-auth.js"></script>
+<script>
+function fmtDate(d){ if(!d) return '—'; try{ return new Date(d).toLocaleDateString('fr-FR'); }catch(e){ return '—'; } }
+function labelStatus(s){ return {active:'Actif',trialing:'Essai',none:'Aucun',past_due:'Paiement en retard',canceled:'Annulé'}[s] || s; }
+
+async function load(){
+  var p = await QUAuth.getProfile();
+  if (!p) return;
+  document.getElementById('vEmail').textContent = p.email || '—';
+  var st = document.getElementById('vStatus');
+  st.innerHTML = '<span class="pill '+(p.subscription_status||'none')+'">'+labelStatus(p.subscription_status||'none')+'</span>';
+  document.getElementById('vPlan').textContent = p.subscription_plan ? p.subscription_plan.toUpperCase() : '—';
+  if (p.subscription_status === 'trialing') document.getElementById('vRenew').textContent = 'Fin essai : ' + fmtDate(p.trial_ends_at);
+  else document.getElementById('vRenew').textContent = fmtDate(p.current_period_end);
+
+  if (!QUAuth.hasActiveAccess(p) || location.search.indexOf('reason=inactive') !== -1) {
+    document.getElementById('banner').classList.add('show');
+  }
+  if (p.stripe_customer_id) document.getElementById('portalBtn').style.display = 'block';
+}
+
+async function checkout(plan, btn){
+  document.getElementById('err').textContent = '';
+  btn.disabled = true; btn.textContent = '...';
+  try { await QUAuth.startCheckout(plan); }
+  catch(e){ document.getElementById('err').textContent = e.message + ' — Stripe pas encore configuré ? Voir PRODUCTIZE.md'; btn.disabled=false; load(); }
+}
+async function portal(btn){
+  document.getElementById('err').textContent = '';
+  btn.disabled = true;
+  try { await QUAuth.openBillingPortal(); }
+  catch(e){ document.getElementById('err').textContent = e.message; btn.disabled=false; }
+}
+
+load();
+</script>
+</body>
+</html>

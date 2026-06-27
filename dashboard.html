@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <script>
 window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
@@ -8,6 +8,8 @@ window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Quad Unlimited — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="qu-auth.js"></script>
 <style>
   :root {
     --gold: #C8A84B;
@@ -705,7 +707,7 @@ function quNormalizeDashStatus(status) {
 async function loadOrders() {
   try {
     const res = await fetch(`${SB_URL}/rest/v1/qu_orders?select=*&order=created_at.desc`, {
-      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+      headers: (window.QUAuth ? QUAuth.restHeaders() : { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();

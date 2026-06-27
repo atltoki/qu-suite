@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-qu-gate="access">
 <head>
 <script>
 window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^(?:[a-z]+:)?\/\//i.test(s)||s.startsWith('mailto:')||s.startsWith('tel:')||s.startsWith('#'))return s;const parts=s.split('#');const pathPart=parts[0],hashPart=parts.slice(1).join('#');const qparts=pathPart.split('?');const rawPath=qparts[0],queryPart=qparts.slice(1).join('?');const clean=rawPath.replace(/\/+$/,'').split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html',cockpit:'cockpit.html',index:'index.html',hub:'index.html'};const target=map[clean];if(target){return target+(queryPart?'?'+queryPart:'')+(hashPart?'#'+hashPart:'');}return s;};(function(){const p=location.pathname.replace(/\/+$/,'');const slug=p.split('/').pop();const map={dashboard:'dashboard.html',crm:'crm.html',admin:'admin.html',app:'app.html'};if(slug&&!/\.[a-z0-9]+$/i.test(slug)&&map[slug]){const next=new URL(map[slug],location.href);next.search=location.search;next.hash=location.hash;location.replace(next.href);}})();
@@ -10,6 +10,7 @@ window.quNormalizeUrl=function(url){if(!url)return url;const s=String(url);if(/^
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="qu-auth.js"></script>
 <script>
 const SB_URL = 'https://hofctcynzmqufgpqcavi.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8';
