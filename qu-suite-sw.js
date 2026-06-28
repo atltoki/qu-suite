@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qu-suite-v2';
+const CACHE_NAME = 'qu-suite-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,17 @@ const ASSETS = [
   './crm.html',
   './dashboard.html',
   './admin.html',
+  './cockpit.html',
+  './hub2.html',
+  './app2.html',
+  './crm2.html',
+  './dashboard2.html',
+  './admin2.html',
+  './cockpit2.html',
+  './landing.html',
+  './login.html',
+  './account.html',
+  './qu-auth.js',
   './404.html',
   './qu-suite-manifest.json'
 ];
@@ -27,6 +38,16 @@ const ROUTES = {
   crm: 'crm.html',
   admin: 'admin.html',
   app: 'app.html',
+  cockpit: 'cockpit.html',
+  hub2: 'hub2.html',
+  app2: 'app2.html',
+  crm2: 'crm2.html',
+  dashboard2: 'dashboard2.html',
+  admin2: 'admin2.html',
+  cockpit2: 'cockpit2.html',
+  landing: 'landing.html',
+  login: 'login.html',
+  account: 'account.html',
   index: 'index.html',
   hub: 'index.html'
 };

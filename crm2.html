@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr" data-qu-gate="access">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="QU CRM">
+<meta name="theme-color" content="#0A0A0A">
+<title>QU CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="qu-auth.js"></script>
+<style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#171717;--line:rgba(255,255,255,.08);--line2:rgba(255,92,0,.16);--text:#F0EDE6;--muted:#9A9590;--o:#FF5C00;--green:#22C55E;--red:#EF4444;--blue:#3B82F6;--yellow:#F59E0B;--purple:#A855F7;--shadow:0 24px 80px rgba(0,0,0,.42)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body{-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:#2b2b2b;border-radius:8px}
+.shell{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;background:rgba(10,10,10,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand b{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.08em}
+.brand b span{color:var(--o)}
+.brand small{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pill{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:999px;padding:9px 12px;font-size:12px;cursor:pointer}
+.pill.primary{background:var(--o);border-color:var(--o);font-weight:700}
+.pill:active{transform:scale(.98)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 10px rgba(34,197,94,.35)}
+.status-dot.off{background:var(--red);box-shadow:0 0 10px rgba(239,68,68,.25)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;border-bottom:1px solid var(--line);background:rgba(10,10,10,.98)}
+.tab{white-space:nowrap;flex:0 0 auto;border:1px solid var(--line);background:var(--bg2);color:var(--muted);border-radius:999px;padding:9px 13px;font-size:12px;cursor:pointer}
+.tab.active{background:rgba(255,92,0,.14);border-color:rgba(255,92,0,.32);color:#FF8A4D}
+.main{flex:1;padding:14px;max-width:1200px;width:100%;margin:0 auto}
+.section{display:none;animation:fade .16s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hero{background:linear-gradient(180deg,rgba(255,92,0,.10),transparent 72%);border:1px solid var(--line2);border-radius:18px;padding:16px;margin-bottom:12px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.06em;line-height:1;margin-bottom:8px}
+.hero p{color:var(--muted);line-height:1.5;font-size:14px;max-width:820px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.metric{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:var(--mc,var(--o))}
+.metric .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.metric .val{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;letter-spacing:.04em}
+.metric .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.search{min-width:220px;flex:1;background:var(--bg3);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:11px 12px;outline:none}
+.search:focus{border-color:rgba(255,92,0,.45)}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
+.form-grid .full{grid-column:1/-1}
+.field label{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:11px 12px;outline:none}
+.field textarea{resize:vertical;min-height:84px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(255,92,0,.55)}
+.btn{border:none;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:700;font-size:13px}
+.btn.primary{background:var(--o);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:#bcb7b2}
+.btn.danger{background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.28);color:#ff8c8c}
+.btn:active{transform:scale(.98)}
+.list{display:grid;gap:8px}
+.item{background:#101010;border:1px solid #1e1e1e;border-radius:14px;padding:12px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.item-main{min-width:0;flex:1}
+.item-title{font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;word-break:break-word}
+.item-meta{font-size:12px;color:#9d9993;line-height:1.45;word-break:break-word}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-size:10px;border-radius:999px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px;line-height:1}
+.b-or{background:rgba(255,92,0,.14);border:1px solid rgba(255,92,0,.24);color:#FF8A4D}
+.b-gr{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.22);color:#6EE7A0}
+.b-bl{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.22);color:#9BC1FF}
+.b-pr{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.22);color:#D3A8FF}
+.b-yl{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.22);color:#F8CF73}
+.empty{padding:18px;color:#7d7873;text-align:center;border:1px dashed #2b2b2b;border-radius:14px;background:#0f0f0f}
+.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:13px 12px}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--o)}
+.stat-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.notice{font-size:12px;color:#7b7772;line-height:1.5;margin-top:10px}
+.footer{margin-top:10px;font-size:11px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:10px 0 16px}
+.sheet{position:fixed;inset:auto 12px 12px 12px;z-index:100;border:1px solid var(--line);background:var(--bg2);border-radius:20px;box-shadow:var(--shadow);padding:14px;display:none}
+.sheet.open{display:block}
+.sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sheet-btn{border:1px solid var(--line);background:#171717;color:var(--text);border-radius:14px;padding:12px 10px;text-align:left;cursor:pointer}
+.sheet-btn strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em}
+.sheet-btn span{display:block;color:var(--muted);font-size:11px;margin-top:3px;line-height:1.35}
+.sheet-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.sheet-close{width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:#171717;color:#fff;cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+.chip{border:1px solid var(--line);background:#131313;color:var(--muted);padding:8px 10px;border-radius:999px;font-size:12px;cursor:pointer}
+.chip.active{background:rgba(255,92,0,.14);border-color:rgba(255,92,0,.32);color:#FF8A4D}
+@media (max-width: 880px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+@media (max-width: 520px){.form-grid{grid-template-columns:1fr}.main{padding:12px}.metrics{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.top-actions{justify-content:flex-start}.sheet{left:8px;right:8px;bottom:8px}.sheet-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">
+      <b>QU <span>CRM</span></b>
+      <small>Centre de contrôle</small>
+    </div>
+    <div class="top-actions">
+      <span id="syncDot" class="status-dot off"></span>
+      <button class="pill" onclick="refreshAll()">Rafraîchir</button>
+      <button class="pill primary" onclick="openSheet()">Apps</button>
+    </div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="main">
+    <section id="sec-overview" class="section"></section>
+    <section id="sec-clients" class="section"></section>
+    <section id="sec-devis" class="section"></section>
+    <section id="sec-taches" class="section"></section>
+    <section id="sec-campagnes" class="section"></section>
+    <section id="sec-expeditions" class="section"></section>
+    <section id="sec-factures" class="section"></section>
+  </div>
+  <div class="footer">CRM connecté à Supabase · accès direct · temps réel</div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-top">
+    <div>
+      <div class="card-title" style="font-size:22px">QU SUITE</div>
+      <div class="small">Raccourcis vers les autres apps</div>
+    </div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-grid" id="sheetGrid"></div>
+</div>
+
+<script>
+const SB_URL = "https://hofctcynzmqufgpqcavi.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZmN0Y3luem1xdWZncHFjYXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjA5NDMsImV4cCI6MjA4OTU5Njk0M30.bTTpvU-Gg1bKqY8Qv3MNIsTyrdPU5aKibSdcLCgBzK8";
+const ENTITY_CONFIG = {"clients": {"label": "Clients", "icon": "◫", "desc": "Contacts et pipeline", "fields": [{"key": "name", "label": "Nom", "type": "text"}, {"key": "email", "label": "Email", "type": "text"}, {"key": "phone", "label": "Téléphone", "type": "text"}, {"key": "company", "label": "Entreprise", "type": "text"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Actif", "Prospect", "VIP", "Inactif"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["name", "email", "phone", "company", "status", "notes"]}, "devis": {"label": "Devis", "icon": "✎", "desc": "Offres commerciales", "fields": [{"key": "title", "label": "Titre", "type": "text"}, {"key": "client", "label": "Client", "type": "text"}, {"key": "amount", "label": "Montant", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Nouveau", "Envoyé", "Accepté", "Refusé"]}, {"key": "date", "label": "Date", "type": "date"}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["title", "client", "amount", "status", "date", "notes"]}, "taches": {"label": "Tâches", "icon": "☑", "desc": "Relances et opérations", "fields": [{"key": "title", "label": "Titre", "type": "text"}, {"key": "assignee", "label": "Assigné à", "type": "text"}, {"key": "due", "label": "Échéance", "type": "date"}, {"key": "status", "label": "Statut", "type": "select", "options": ["À faire", "En cours", "Bloqué", "Terminé"]}, {"key": "priority", "label": "Priorité", "type": "select", "options": ["Haute", "Moyenne", "Basse"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["title", "assignee", "due", "status", "priority", "notes"]}, "campagnes": {"label": "Campagnes", "icon": "✦", "desc": "Marketing et actions", "fields": [{"key": "name", "label": "Nom", "type": "text"}, {"key": "channel", "label": "Canal", "type": "text"}, {"key": "budget", "label": "Budget", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Brouillon", "Active", "Pause", "Terminée"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["name", "channel", "budget", "status", "notes"]}, "expeditions": {"label": "Expéditions", "icon": "➜", "desc": "Réceptions et envois", "fields": [{"key": "reference", "label": "Référence", "type": "text"}, {"key": "carrier", "label": "Transporteur", "type": "text"}, {"key": "tracking", "label": "Tracking", "type": "text"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Préparée", "En route", "Livrée", "Retournée"]}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["reference", "carrier", "tracking", "status", "notes"]}, "factures": {"label": "Factures", "icon": "₣", "desc": "Facturation et paiements", "fields": [{"key": "number", "label": "Numéro", "type": "text"}, {"key": "client", "label": "Client", "type": "text"}, {"key": "total", "label": "Total", "type": "number"}, {"key": "status", "label": "Statut", "type": "select", "options": ["Brouillon", "Émise", "Payée", "En retard"]}, {"key": "due_date", "label": "Échéance", "type": "date"}, {"key": "notes", "label": "Notes", "type": "textarea"}], "search": ["number", "client", "total", "status", "due_date", "notes"]}};
+
+const APPS = [
+  { id:'hub', label:'Hub', url:'hub2.html', icon:'⌂', desc:'Portail et raccourcis' },
+  { id:'cockpit', label:'Cockpit', url:'cockpit2.html', icon:'🧠', desc:'Centre de contrôle' },
+  { id:'crm', label:'CRM', url:'crm2.html', icon:'◫', desc:'Clients et pipeline' },
+  { id:'dashboard', label:'Dashboard', url:'dashboard2.html', icon:'▣', desc:'Vue d’ensemble' },
+  { id:'admin', label:'Admin', url:'admin2.html', icon:'⚙', desc:'Stock et commandes' },
+  { id:'app', label:'Scan / Picking', url:'app2.html', icon:'✦', desc:'Outils terrain' },
+];
+
+const state = {
+  page: 'overview',
+  editing: {},
+  search: {},
+  local: loadLocal(),
+};
+let db = null;
+
+function loadLocal() {
+  try { return JSON.parse(localStorage.getItem('qu_crm_local_v2') || '{}') || {}; } catch (e) { return {}; }
+}
+function saveLocal() { try { localStorage.setItem('qu_crm_local_v2', JSON.stringify(state.local)); } catch (e) {} }
+function uid() { return (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('id-' + Math.random().toString(36).slice(2) + Date.now().toString(36)); }
+function esc(v) { return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
+function statusClass(v) {
+  const s = String(v || '').toLowerCase();
+  if (/(actif|payée|envoyé|envoyée|validé|terminé|livré|en route)/.test(s)) return 'b-gr';
+  if (/(nouveau|brouillon|prospect|à faire|a faire|préparée|preparee)/.test(s)) return 'b-or';
+  if (/(pause|bloqué|bloque|retard|faible)/.test(s)) return 'b-yl';
+  if (/(refus|annulé|inactif|retournée|retournee)/.test(s)) return 'b-pr';
+  return 'b-bl';
+}
+function setSync(ok) {
+  const el = document.getElementById('syncDot');
+  if (el) el.className = 'status-dot' + (ok ? '' : ' off');
+}
+function go(url) { location.href = url; }
+
+function setSection(name) {
+  state.page = name;
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('sec-' + name);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  if (name !== 'overview') renderEntity(name);
+}
+function renderTabs() {
+  const tabs = ['overview', ...Object.keys(ENTITY_CONFIG)];
+  const labels = { overview:'Vue d’ensemble', clients:'Clients', devis:'Devis', taches:'Tâches', campagnes:'Campagnes', expeditions:'Expéditions', factures:'Factures' };
+  const container = document.getElementById('tabs');
+  container.innerHTML = tabs.map(k => `<button class="tab" data-tab="${k}" onclick="setSection('${k}')">${labels[k] || k}</button>`).join('');
+}
+function makeTopLinks() {
+  const container = document.getElementById('sheetGrid');
+  container.innerHTML = APPS.map(a => `
+    <button class="sheet-btn" onclick="go('${a.url}')">
+      <strong>${a.icon} ${a.label}</strong>
+      <span>${a.desc}</span>
+    </button>
+  `).join('');
+}
+function openSheet() { document.getElementById('sheet').classList.add('open'); }
+function closeSheet() { document.getElementById('sheet').classList.remove('open'); }
+
+function normalizeRow(row) { return row && row.data && typeof row.data === 'object' ? row.data : (row || {}); }
+function getStore(table) { if (!state.local[table]) state.local[table] = []; return state.local[table]; }
+function setStore(table, items) { state.local[table] = Array.isArray(items) ? items : []; saveLocal(); }
+
+async function loadEntity(table) {
+  if (!db) return getStore(table);
+  try {
+    const { data, error } = await db.from(table).select('id,data,created_at,updated_at').order('updated_at', { ascending:false });
+    if (error) throw error;
+    const items = (data || []).map(row => {
+      const payload = normalizeRow(row);
+      return { id: row.id || payload.id || uid(), ...payload };
+    });
+    setStore(table, items);
+    setSync(true);
+    return items;
+  } catch (e) {
+    console.warn('loadEntity', table, e);
+    setSync(false);
+    return getStore(table);
+  }
+}
+async function loadAll() {
+  for (const t of Object.keys(ENTITY_CONFIG)) await loadEntity(t);
+}
+function fieldValue(field, item) { return item && item[field.key] !== undefined ? item[field.key] : ''; }
+function fieldInput(field, value) {
+  const isFull = field.type === 'textarea' ? ' full' : '';
+  if (field.type === 'textarea') {
+    return `<div class="field${isFull}"><label>${field.label}</label><textarea data-key="${field.key}" placeholder="${field.label}">${esc(value)}</textarea></div>`;
+  }
+  if (field.type === 'select') {
+    return `<div class="field${isFull}"><label>${field.label}</label><select data-key="${field.key}">${field.options.map(o => `<option ${String(value)===o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`;
+  }
+  const type = field.type === 'number' ? 'number' : (field.type === 'date' ? 'date' : 'text');
+  return `<div class="field${isFull}"><label>${field.label}</label><input data-key="${field.key}" type="${type}" value="${esc(value)}"></div>`;
+}
+function renderForm(table, item = {}) {
+  const cfg = ENTITY_CONFIG[table];
+  const title = item.id ? `Modifier ${cfg.label}` : `Ajouter ${cfg.label}`;
+  const fields = cfg.fields.map(f => fieldInput(f, fieldValue(f, item))).join('');
+  return `
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">${title}</div>
+        <div class="small">${cfg.desc}</div>
+      </div>
+      <div class="form-grid">${fields}</div>
+      <div class="toolbar">
+        <button class="btn primary" onclick="saveEntity('${table}')">Enregistrer</button>
+        <button class="btn ghost" onclick="resetForm('${table}')">Réinitialiser</button>
+      </div>
+      <div class="notice">Les données se synchronisent en temps réel avec Supabase.</div>
+    </div>`;
+}
+function renderList(table) {
+  const cfg = ENTITY_CONFIG[table];
+  const q = String(state.search[table] || '').toLowerCase().trim();
+  const items = (getStore(table) || []).filter(item => !q || cfg.search.some(k => String(item[k] ?? '').toLowerCase().includes(q)));
+  return `
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">${cfg.icon} ${cfg.label}</div>
+        <div class="small">${items.length} élément(s)</div>
+      </div>
+      <div class="toolbar">
+        <input class="search" placeholder="Rechercher..." value="${esc(state.search[table] || '')}" oninput="state.search['${table}']=this.value; saveLocal(); renderEntity('${table}')">
+      </div>
+      <div class="list">
+        ${items.length ? items.map(item => itemRow(table, item)).join('') : '<div class="empty">Aucun élément pour le moment.</div>'}
+      </div>
+    </div>`;
+}
+function itemRow(table, item) {
+  const cfg = ENTITY_CONFIG[table];
+  const title = item.name || item.title || item.reference || item.number || item.client || 'Sans titre';
+  const metaFields = cfg.fields.filter(f => f.key !== 'notes').slice(0, 3);
+  const meta = metaFields.map(f => `${f.label}: ${String(item[f.key] ?? '—')}`).join(' · ');
+  const status = item.status ? `<span class="badge ${statusClass(item.status)}">${esc(item.status)}</span>` : '';
+  return `
+    <div class="item">
+      <div class="item-main">
+        <div class="item-title">${esc(title)}</div>
+        <div class="item-meta">${esc(meta || item.notes || 'Aucune note')}</div>
+        <div class="badges">${status}</div>
+      </div>
+      <div class="toolbar" style="margin:0;flex-shrink:0">
+        <button class="btn ghost" onclick="editEntity('${table}','${item.id}')">Éditer</button>
+        <button class="btn danger" onclick="deleteEntity('${table}','${item.id}')">Suppr.</button>
+      </div>
+    </div>`;
+}
+function getCurrentEdit(table) { return (getStore(table) || []).find(x => x.id === state.editing[table]) || {}; }
+function resetForm(table) { state.editing[table] = ''; renderEntity(table); }
+function editEntity(table, id) { state.editing[table] = id; renderEntity(table); }
+
+function formData(table) {
+  const cfg = ENTITY_CONFIG[table];
+  const root = document.getElementById('sec-' + table);
+  const data = {};
+  root.querySelectorAll('[data-key]').forEach(el => {
+    let v = el.value;
+    if (el.type === 'number') v = v === '' ? '' : Number(v);
+    data[el.dataset.key] = v;
+  });
+  if (!data.status) {
+    const sf = cfg.fields.find(f => f.key === 'status');
+    if (sf && sf.options && sf.options.length) data.status = sf.options[0];
+  }
+  return data;
+}
+async function saveEntity(table) {
+  const payload = formData(table);
+  const id = state.editing[table] || uid();
+  payload.id = id;
+  payload.updated_at = new Date().toISOString();
+  if (!state.editing[table]) payload.created_at = new Date().toISOString();
+
+  const items = getStore(table);
+  const idx = items.findIndex(x => x.id === id);
+  if (idx >= 0) items[idx] = { ...items[idx], ...payload }; else items.unshift(payload);
+  setStore(table, items);
+  state.editing[table] = id;
+  renderOverview();
+
+  if (db) {
+    try {
+      const { error } = await db.from(table).upsert({ id, data: payload }, { onConflict: 'id' });
+      if (error) throw error;
+      setSync(true);
+    } catch (e) {
+      console.warn('saveEntity', table, e);
+      setSync(false);
+    }
+  }
+  renderEntity(table);
+}
+async function deleteEntity(table, id) {
+  if (!confirm('Supprimer cet élément ?')) return;
+  setStore(table, getStore(table).filter(x => x.id !== id));
+  if (state.editing[table] === id) state.editing[table] = '';
+  renderOverview();
+  renderEntity(table);
+  if (db) {
+    try {
+      const { error } = await db.from(table).delete().eq('id', id);
+      if (error) throw error;
+      setSync(true);
+    } catch (e) {
+      console.warn('deleteEntity', table, e);
+      setSync(false);
+    }
+  }
+}
+function renderOverview() {
+  const total = Object.keys(ENTITY_CONFIG).reduce((sum, k) => sum + getStore(k).length, 0);
+  const clients = getStore('clients').filter(c => String(c.status || '').toLowerCase() === 'actif').length;
+  const signed = getStore('devis').filter(d => /accept|sign/i.test(String(d.status || ''))).reduce((s, d) => s + toNum(d.amount), 0);
+  const late = getStore('factures').filter(f => /retard/i.test(String(f.status || ''))).length;
+
+  const cards = [
+    { lbl:'Total éléments', val: total, sub:'Local + Supabase', color:'--o' },
+    { lbl:'Clients actifs', val: clients, sub:'Pipeline chaud', color:'--green' },
+    { lbl:'CA signé', val: signed.toLocaleString('fr-FR') + ' €', sub:'Devis acceptés', color:'--blue' },
+    { lbl:'Factures en retard', val: late, sub:'À surveiller', color:'--red' },
+  ];
+
+  document.getElementById('sec-overview').innerHTML = `
+    <div class="hero">
+      <h1>CRM opérationnel</h1>
+      <p>Vue unifiée pour le commercial, le suivi, les relances et la facturation. Zéro écran de connexion, zéro service worker, et des raccourcis vers toutes les autres apps.</p>
+    </div>
+    <div class="metrics">
+      ${cards.map(c => `<div class="metric" style="--mc:var(${c.color})"><div class="lbl">${c.lbl}</div><div class="val">${c.val}</div><div class="sub">${c.sub}</div></div>`).join('')}
+    </div>
+    <div class="stat-grid">
+      ${Object.keys(ENTITY_CONFIG).map(k => `<div class="stat-card"><div class="stat-num">${getStore(k).length}</div><div class="stat-lbl">${ENTITY_CONFIG[k].label}</div></div>`).join('')}
+    </div>
+    <div style="height:12px"></div>
+    <div class="grid">
+      ${Object.keys(ENTITY_CONFIG).map(k => `
+        <div class="card">
+          <div class="card-head"><div class="card-title">${ENTITY_CONFIG[k].icon} ${ENTITY_CONFIG[k].label}</div><div class="small">${getStore(k).length} élément(s)</div></div>
+          <div class="small">${ENTITY_CONFIG[k].desc}</div>
+          <div style="height:10px"></div>
+          <div class="toolbar">
+            <button class="btn primary" onclick="setSection('${k}')">Ouvrir</button>
+            <button class="btn ghost" onclick="editEntity('${k}','')">Nouveau</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="notice">Boutons rapides: Hub, Cockpit, Scan, Dashboard, Admin.</div>
+  `;
+}
+function renderEntity(table) {
+  const sec = document.getElementById('sec-' + table);
+  if (!sec) return;
+  const item = getCurrentEdit(table);
+  sec.innerHTML = `
+    <div class="toolbar">
+      <button class="pill" onclick="setSection('overview')">Vue d’ensemble</button>
+      <button class="pill" onclick="go('hub2.html')">Hub</button>
+      <button class="pill" onclick="go('cockpit2.html')">Cockpit</button>
+      <button class="pill" onclick="go('app2.html')">Scan</button>
+      <button class="pill" onclick="go('dashboard2.html')">Dashboard</button>
+      <button class="pill" onclick="go('admin2.html')">Admin</button>
+    </div>
+    ${renderForm(table, item)}
+    <div style="height:10px"></div>
+    ${renderList(table)}
+  `;
+}
+function renderAll() {
+  renderTabs();
+  renderOverview();
+  if (state.page !== 'overview') renderEntity(state.page);
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === state.page));
+}
+async function refreshAll() { await loadAll(); renderAll(); }
+function subscribeRealtime() {
+  if (!db) return;
+  const channel = db.channel('crm-live');
+  Object.keys(ENTITY_CONFIG).forEach(table => {
+    channel.on('postgres_changes', { event:'*', schema:'public', table }, async () => {
+      await loadEntity(table);
+      if (state.page === table) renderEntity(table);
+      renderOverview();
+    });
+  });
+  channel.subscribe();
+}
+async function initSupabase() {
+  try {
+    db = supabase.createClient(SB_URL, SB_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storage: window.localStorage }
+    });
+    setSync(true);
+  } catch (e) {
+    console.warn('Supabase init failed', e);
+    db = null;
+    setSync(false);
+  }
+}
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state.local, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'qu-crm-export.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function importJSON(ev) {
+  const file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(String(reader.result || '{}'));
+      state.local = data && typeof data === 'object' ? data : {};
+      saveLocal();
+      renderAll();
+      alert('Import terminé');
+    } catch (e) { alert('JSON invalide'); }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
+}
+window.addEventListener('hashchange', () => {
+  const h = location.hash.replace('#','');
+  if (ENTITY_CONFIG[h] || h === 'overview') {
+    state.page = h || 'overview';
+    setSection(state.page);
+  }
+});
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
+document.addEventListener('DOMContentLoaded', async () => {
+  renderTabs();
+  makeTopLinks();
+  await initSupabase();
+  for (const t of Object.keys(ENTITY_CONFIG)) await loadEntity(t);
+  subscribeRealtime();
+  const h = location.hash.replace('#','');
+  state.page = (ENTITY_CONFIG[h] ? h : 'overview');
+  renderAll();
+  setSection(state.page);
+});
+</script>
+</body>
+</html>
